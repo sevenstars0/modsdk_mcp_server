@@ -2,7 +2,7 @@
 
 > **Model Context Protocol Server for 我的世界中国版（网易）ModSDK 开发**
 
-为 AI 编程助手（Claude Desktop、Cursor、CodeMaker 等）提供 **文档检索、代码生成、代码审查** 能力，显著提升 NetEase ModSDK 开发效率。
+为 AI 编程助手（Claude Desktop、Cursor 等）提供 **文档检索、代码生成、代码审查** 能力，显著提升 NetEase ModSDK 开发效率。
 
 ---
 
@@ -49,7 +49,7 @@ pip install -r requirements.txt
 ```json
 {
   "mcpServers": {
-    "ModSDK MCP Server": {
+    "modsdk-mcp-server": {
       "command": "python",
       "args": ["D:/ModSDK MCP Server/start_mcp.py"]
     }
@@ -66,7 +66,7 @@ pip install -r requirements.txt
 Claude Code 不支持 `cwd` 参数，使用 `start_mcp.py` 绝对路径即可：
 
 ```bash
-claude mcp add "ModSDK MCP Server" -- python "D:/ModSDK MCP Server/start_mcp.py"
+claude mcp add "modsdk-mcp-server" -- python "D:/ModSDK MCP Server/start_mcp.py"
 ```
 
 或手动编辑 `~/.claude/settings.json`：
@@ -74,7 +74,7 @@ claude mcp add "ModSDK MCP Server" -- python "D:/ModSDK MCP Server/start_mcp.py"
 ```json
 {
   "mcpServers": {
-    "ModSDK MCP Server": {
+    "modsdk-mcp-server": {
       "command": "python",
       "args": ["D:/ModSDK MCP Server/start_mcp.py"]
     }
@@ -91,7 +91,7 @@ claude mcp add "ModSDK MCP Server" -- python "D:/ModSDK MCP Server/start_mcp.py"
 ```json
 {
   "servers": {
-    "ModSDK MCP Server": {
+    "modsdk-mcp-server": {
       "command": "python",
       "args": ["D:/ModSDK MCP Server/start_mcp.py"]
     }
@@ -135,22 +135,6 @@ claude mcp add "ModSDK MCP Server" -- python "D:/ModSDK MCP Server/start_mcp.py"
 
 </details>
 
-<details>
-<summary><b>🟡 CodeMaker</b></summary>
-
-在项目根目录创建 `.mcp.json`：
-
-```json
-{
-  "mcpServers": {
-    "ModSDK MCP Server": {
-      "command": "python",
-      "args": ["D:/ModSDK MCP Server/start_mcp.py"]
-    }
-  }
-}
-```
-</details>
 
 <details>
 <summary><b>🔴 SSE 模式（远程 / Docker）</b></summary>
@@ -167,7 +151,7 @@ python "D:/ModSDK MCP Server/start_mcp.py" --sse
 ```json
 {
   "mcpServers": {
-    "ModSDK MCP Server": {
+    "modsdk-mcp-server": {
       "transport": "sse",
       "url": "http://localhost:8000/sse"
     }
@@ -269,8 +253,8 @@ ModSDK MCP Server/
 │   └── 更新信息/                   #   版本更新日志
 ├── standard/                       # 官方开发规范文档
 ├── skills/                         # Claude Skills 文件
-├── start_mcp.py                    # CodeMaker 专用启动入口
-├── .mcp.json                       # CodeMaker MCP 配置
+├── start_mcp.py                    # Agent专用启动入口
+├── .mcp.json                       # MCP 配置
 ├── requirements.txt                # Python 依赖
 ├── Dockerfile                      # Docker 镜像配置
 ├── docker-compose.yml              # Docker Compose 配置
