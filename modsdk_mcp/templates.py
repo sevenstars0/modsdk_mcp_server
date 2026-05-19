@@ -502,8 +502,8 @@ class TemplateGenerator:
         class_name = to_camel_case(mod_id)
         project_folder = get_project_folder_name(mod_id)  # 项目根目录：{mod_id}_Script
         
-        # 脚本目录必须放在 behavior_pack 的 developer_mods 下
-        script_base = "behavior_pack_{}/developer_mods/{}/".format(mod_id, project_folder)
+        # 脚本目录直接放在 behavior_pack 根目录下
+        script_base = "behavior_pack_{}/{}/".format(mod_id, project_folder)
         
         files = {
             # 根目录 __init__.py（modMain.py 所在目录）
