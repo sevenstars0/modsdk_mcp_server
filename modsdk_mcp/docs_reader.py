@@ -221,6 +221,9 @@ class DocsReader:
         # 枚举值数据（从 docs/枚举值/*.md 自动解析）
         self._enum_data: Dict[str, List[tuple]] = {}  # enum_name -> [(NAME, VALUE, COMMENT), ...]
 
+        # API名称 -> 文档section内容列表（用于提取备注和示例）
+        self._api_section_map: Dict[str, List[str]] = {}  # name -> [section_content, ...]
+
     def load_all_docs(self) -> None:
         """加载所有文档（API参考 + 官方教程）"""
         if not self.docs_path.exists():
@@ -245,6 +248,7 @@ class DocsReader:
         self._build_index()
         self._load_structured_data()
         self._load_enum_data()
+        self._build_api_section_map()
     
     def _load_document(self, filepath: Path, source_tag: str = "") -> Optional[Document]:
         """加载单个文档
@@ -442,7 +446,15 @@ class DocsReader:
 
         # 构建排序后的 API 关键词列表，用于前缀二分查找
         self._sorted_api_keywords = sorted(self._api_keywords.keys())
-    
+
+    def _build_api_section_map(self):
+        """构建 API名称→文档section内容映射，用于 get_api_detail 提取备注和示例"""
+        self._api_section_map.clear()
+        for doc in self._documents.values():
+            for sec in doc.sections:
+                if sec.title.lower() in self._api_name_lower_map:
+                    self._api_section_map.setdefault(sec.title, []).append(sec.content)
+
     def _index_api_entry(self, entry: ApiEntry, unique_key: str) -> None:
         """为 API/事件条目建立关键词索引"""
         # 1. 完整名称
@@ -929,8 +941,11 @@ class DocsReader:
         if not matches:
             return None
 
+        # 获取文档section内容用于提取备注和示例
+        section_contents = self._api_section_map.get(name, [])
+
         results = []
-        for entry in matches:
+        for i, entry in enumerate(matches):
             result = {
                 "name": entry.name,
                 "type": entry.entry_type,
@@ -941,9 +956,36 @@ class DocsReader:
                 "return": entry.return_info,
                 "class_path": entry.class_path,
             }
+            # 从对应文档section提取备注和示例
+            if i < len(section_contents):
+                notes, example = self._parse_notes_and_example(section_contents[i])
+                if notes:
+                    result["notes"] = notes
+                if example:
+                    result["example"] = example
+
             results.append(result)
 
         return results if len(results) > 1 else results[0]
+
+    def _parse_notes_and_example(self, content):
+        """从文档section内容中提取备注和示例"""
+        notes = []
+        example = ""
+
+        # 解析备注："备注"后面的bullet points，直到下一个分隔符或"示例"
+        notes_match = re.search(r'备注\s*\n(.*?)(?=\n\s*-\s*\n|\n示例|\Z)', content, re.DOTALL)
+        if notes_match:
+            notes_text = notes_match.group(1).strip()
+            notes = [l.lstrip('- ').strip() for l in notes_text.split('\n')
+                     if l.strip().startswith('-') and l.strip() != '- 示例']
+
+        # 解析示例："示例"后的代码块（可能没有闭合的```）
+        example_match = re.search(r'示例\s*\n```(?:python)?\n(.*?)(?:```|$)', content, re.DOTALL)
+        if example_match:
+            example = example_match.group(1).strip()
+
+        return notes, example
 
     def _load_enum_data(self) -> None:
         """从 docs/枚举值/*.md 自动解析枚举值定义。
@@ -1321,6 +1363,7 @@ class DocsReader:
         self._api_keyword_doc_freq.clear()
         self._total_api_entries = 0
         self._category_keywords.clear()
+        self._api_section_map.clear()
         self.load_all_docs()
 
 
