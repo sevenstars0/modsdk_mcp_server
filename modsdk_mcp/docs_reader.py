@@ -46,6 +46,8 @@ class ApiEntry:
     return_info: Dict[str, str]
     entry_type: str  # "api" 或 "event"
     class_path: str  # 完整类路径
+    notes: List[str] = None  # 备注（从文档section提取）
+    example: str = ""  # 示例代码（从文档section提取）
 
 
 # ============================================================================
@@ -221,9 +223,6 @@ class DocsReader:
         # 枚举值数据（从 docs/枚举值/*.md 自动解析）
         self._enum_data: Dict[str, List[tuple]] = {}  # enum_name -> [(NAME, VALUE, COMMENT), ...]
 
-        # API名称 -> 文档section内容列表（用于提取备注和示例）
-        self._api_section_map: Dict[str, List[str]] = {}  # name -> [section_content, ...]
-
     def load_all_docs(self) -> None:
         """加载所有文档（API参考 + 官方教程）"""
         if not self.docs_path.exists():
@@ -248,7 +247,6 @@ class DocsReader:
         self._build_index()
         self._load_structured_data()
         self._load_enum_data()
-        self._build_api_section_map()
     
     def _load_document(self, filepath: Path, source_tag: str = "") -> Optional[Document]:
         """加载单个文档
@@ -447,13 +445,25 @@ class DocsReader:
         # 构建排序后的 API 关键词列表，用于前缀二分查找
         self._sorted_api_keywords = sorted(self._api_keywords.keys())
 
-    def _build_api_section_map(self):
-        """构建 API名称→文档section内容映射，用于 get_api_detail 提取备注和示例"""
-        self._api_section_map.clear()
+        # 从文档sections提取备注和示例，补充到ApiEntry
         for doc in self._documents.values():
-            for sec in doc.sections:
-                if sec.title.lower() in self._api_name_lower_map:
-                    self._api_section_map.setdefault(sec.title, []).append(sec.content)
+            sections = doc.sections
+            for i, sec in enumerate(sections):
+                keys = self._api_name_lower_map.get(sec.title.lower())
+                if not keys:
+                    continue
+                # 收集子section内容（如"服务端接口"/"客户端接口"）
+                sub = []
+                for j in range(i + 1, len(sections)):
+                    if sections[j].level <= sec.level:
+                        break
+                    sub.append(sections[j].content)
+                contents = sub or [sec.content]
+                for k, uk in enumerate(keys):
+                    entry = self._api_entries[uk]
+                    if entry.notes is None:
+                        content = contents[k] if k < len(contents) else contents[-1]
+                        entry.notes, entry.example = self._parse_notes_and_example(content)
 
     def _index_api_entry(self, entry: ApiEntry, unique_key: str) -> None:
         """为 API/事件条目建立关键词索引"""
@@ -941,11 +951,8 @@ class DocsReader:
         if not matches:
             return None
 
-        # 获取文档section内容用于提取备注和示例
-        section_contents = self._api_section_map.get(name, [])
-
         results = []
-        for i, entry in enumerate(matches):
+        for entry in matches:
             result = {
                 "name": entry.name,
                 "type": entry.entry_type,
@@ -955,15 +962,9 @@ class DocsReader:
                 "params": entry.params,
                 "return": entry.return_info,
                 "class_path": entry.class_path,
+                "notes": entry.notes or [],
+                "example": entry.example or "",
             }
-            # 从对应文档section提取备注和示例
-            if i < len(section_contents):
-                notes, example = self._parse_notes_and_example(section_contents[i])
-                if notes:
-                    result["notes"] = notes
-                if example:
-                    result["example"] = example
-
             results.append(result)
 
         return results if len(results) > 1 else results[0]
@@ -1363,7 +1364,6 @@ class DocsReader:
         self._api_keyword_doc_freq.clear()
         self._total_api_entries = 0
         self._category_keywords.clear()
-        self._api_section_map.clear()
         self.load_all_docs()
 
 
