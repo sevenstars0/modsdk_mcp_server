@@ -978,8 +978,20 @@ class DocsReader:
         notes_match = re.search(r'备注\s*\n(.*?)(?=\n\s*-\s*\n|\n示例|\Z)', content, re.DOTALL)
         if notes_match:
             notes_text = notes_match.group(1).strip()
-            notes = [l.lstrip('- ').strip() for l in notes_text.split('\n')
-                     if l.strip().startswith('-') and l.strip() != '- 示例']
+            # 按 bullet 分组：以 "- " 开头起新条目，其后非空且非 bullet 的行(代码块/续写)追加到上一条
+            # 否则缩进代码块(如 PickFacing 返回值示例)会因不以 "-" 开头而被丢弃
+            items = []
+            for line in notes_text.split('\n'):
+                stripped = line.strip()
+                if not stripped:
+                    continue
+                if stripped == '- 示例':
+                    continue
+                if stripped.startswith('- '):
+                    items.append(stripped[2:])
+                elif items:
+                    items[-1] += '\n' + stripped
+            notes = items
 
         # 解析示例："示例"后的代码块（可能没有闭合的```）
         example_match = re.search(r'示例\s*\n```(?:python)?\n(.*?)(?:```|$)', content, re.DOTALL)
