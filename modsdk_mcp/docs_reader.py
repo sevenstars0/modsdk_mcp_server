@@ -9,6 +9,7 @@ import re
 import json
 import math
 import bisect
+import sys
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Set, Tuple
 from dataclasses import dataclass
@@ -46,8 +47,11 @@ class ApiEntry:
     return_info: Dict[str, str]
     entry_type: str  # "api" 或 "event"
     class_path: str  # 完整类路径
-    notes: List[str] = None  # 备注（从文档section提取）
-    example: str = ""  # 示例代码（从文档section提取）
+    remarks: List[str]
+    examples: List[str]
+    source_url: str
+    source_last_modified: str
+    state: List[Dict[str, Any]]
 
 
 # ============================================================================
@@ -180,6 +184,12 @@ class DocsReader:
     # 这些目录包含 JSON UI、自定义维度/方块/实体、粒子特效等关键教程
     # 开闭原则：新增子目录即可扩展，不改核心逻辑
     GUIDE_SUBDIRS = [
+        "21-界面与交互",
+        "15-自定义游戏内容",
+        "13-模组SDK编程",
+        "10-基本概念",
+        "18-性能优化",
+        "19-手机电脑适配",
         "mcguide/18-界面与交互",                     # JSON UI 完整说明（2741行）
         "mcguide/20-玩法开发/15-自定义游戏内容",       # 维度/群系/方块/实体/物品教程
         "mcguide/20-玩法开发/10-基本概念",            # 基础概念
@@ -242,7 +252,7 @@ class DocsReader:
                         self._load_document(md_file, source_tag="guide")
                         guide_count += 1
             if guide_count > 0:
-                print("[DocsReader] 已加载 {} 篇官方教程文档".format(guide_count))
+                print("[DocsReader] 已加载 {} 篇官方教程文档".format(guide_count), file=sys.stderr)
 
         self._build_index()
         self._load_structured_data()
@@ -306,7 +316,7 @@ class DocsReader:
             return doc
             
         except Exception as e:
-            print(f"加载文档失败 {filepath}: {e}")
+            print("加载文档失败 {}: {}".format(filepath.name, e), file=sys.stderr)
             return None
     
     def _extract_title(self, content: str) -> Optional[str]:
@@ -408,15 +418,20 @@ class DocsReader:
                             return_info=method.get("return", {}),
                             entry_type="api",
                             class_path=class_path,
+                            remarks=method.get("remarks", []),
+                            examples=method.get("examples", []),
+                            source_url=method.get("source_url", ""),
+                            source_last_modified=method.get("source_last_modified", ""),
+                            state=method.get("state", []),
                         )
-                        # 用 class_path::name 作为唯一 key，避免同名覆盖
-                        unique_key = f"{class_path}::{entry.name}"
+                        # 端侧参与唯一键，避免同一路径下的同名双端接口相互覆盖。
+                        unique_key = f"{class_path}::{entry.name}::{entry.side}"
                         self._api_entries[unique_key] = entry
                         self._api_name_lower_map.setdefault(entry.name.lower(), []).append(unique_key)
                         # 建立关键词索引：API名拆词、中文描述
                         self._index_api_entry(entry, unique_key)
             except Exception as e:
-                print(f"加载 interface.json 失败: {e}")
+                print(f"加载 interface.json 失败: {e}", file=sys.stderr)
         
         # 加载 events.json
         events_path = self.docs_path / "events.json"
@@ -435,13 +450,18 @@ class DocsReader:
                             return_info=event.get("return", {}),
                             entry_type="event",
                             class_path=event_path,
+                            remarks=event.get("remarks", []),
+                            examples=event.get("examples", []),
+                            source_url=event.get("source_url", ""),
+                            source_last_modified=event.get("source_last_modified", ""),
+                            state=event.get("state", []),
                         )
-                        unique_key = f"{event_path}::{entry.name}"
+                        unique_key = f"{event_path}::{entry.name}::{entry.side}"
                         self._api_entries[unique_key] = entry
                         self._api_name_lower_map.setdefault(entry.name.lower(), []).append(unique_key)
                         self._index_api_entry(entry, unique_key)
             except Exception as e:
-                print(f"加载 events.json 失败: {e}")
+                print(f"加载 events.json 失败: {e}", file=sys.stderr)
         
         # 构建 IDF 权重数据
         self._total_api_entries = len(self._api_entries)
@@ -507,7 +527,7 @@ class DocsReader:
                         self._add_api_keyword(cn_kw[i:i+2], unique_key)
 
         # 3. 中文描述关键词（预处理：去噪 + 截断前80字避免长描述霸榜）
-        desc_for_index = entry.desc
+        desc_for_index = "\n".join([entry.desc] + entry.remarks)
         desc_for_index = re.sub(r'^触发时机[：:]\s*', '', desc_for_index)
         desc_for_index = desc_for_index[:80]
         chinese_phrases = re.findall(r'[\u4e00-\u9fff]+', desc_for_index)
@@ -648,7 +668,7 @@ class DocsReader:
 
         # 4. 描述子串匹配（逐 token，解决 "玩家位置" 不是 "获取实体位置" 子串的问题）
         for unique_key, entry in self._api_entries.items():
-            desc_lower = entry.desc.lower()
+            desc_lower = "\n".join([entry.desc] + entry.remarks).lower()
             if query_lower in desc_lower:
                 scores.setdefault(unique_key, 0)
                 scores[unique_key] += 8.0
@@ -680,6 +700,11 @@ class DocsReader:
                 "params": entry.params,
                 "return": entry.return_info,
                 "class_path": entry.class_path,
+                "remarks": entry.remarks,
+                "examples": entry.examples,
+                "source_url": entry.source_url,
+                "source_last_modified": entry.source_last_modified,
+                "state": entry.state,
                 "score": round(score, 2),
             })
         
@@ -824,6 +849,10 @@ class DocsReader:
                 tree[top] = {}
             tree[top][sub] = tree[top].get(sub, 0) + 1
         return tree
+
+    def get_api_entry_count(self) -> int:
+        """获取结构化 API/事件总条目数，包含未分类条目。"""
+        return self._total_api_entries
 
     def browse_api_category(self, category: str, entry_type: str = "all") -> List[Dict[str, str]]:
         """按分类浏览API/事件，返回该分类下所有条目的简要信息"""
@@ -1082,14 +1111,14 @@ class DocsReader:
 
     def get_enum_inline(self, enum_name: str) -> Optional[str]:
         """获取枚举值的紧凑内联字符串。
-        ≤20 个值: 返回 "NAME=VALUE, NAME2=VALUE2, ..."
-        >20 个值: 返回摘要 + 提示查文档
+        不超过 40 个值时返回完整内容；更大的枚举返回摘要并提示查文档。
+        40 项上限可完整覆盖 OriginGUIName，同时避免大型枚举挤占上下文。
         """
         entries = self._enum_data.get(enum_name)
         if not entries:
             return None
 
-        if len(entries) <= 20:
+        if len(entries) <= 40:
             return ", ".join(f"{name}={value}" for name, value, _ in entries)
         else:
             preview = ", ".join(f"{name}={value}" for name, value, _ in entries[:10])
@@ -1428,27 +1457,22 @@ def get_docs_reader(docs_path: str = "docs") -> DocsReader:
 
 
 def _find_guide_root() -> str:
-    """自动检测网易官方教程文档根目录（netease-modsdk-wiki/docs/）"""
+    """只从显式配置或仓库内 input 目录加载教程，避免机器路径耦合。"""
     project_root = Path(__file__).parent.parent
-
-    # 候选路径列表（按优先级）
     candidates = [
-        # 环境变量指定
         os.environ.get("MODSDK_WIKI_PATH", ""),
-        # MCP Server 项目内
-        str(project_root / "external" / "netease-modsdk-wiki" / "docs"),
-        # 常见的兄弟目录布局
-        str(project_root.parent / "netease-modsdk-wiki" / "docs"),
-        # new-mg 项目中的路径
-        str(project_root.parent / "new-mg" / "external" / "netease-modsdk-wiki" / "docs"),
+        str(project_root / "input"),
     ]
 
-    for path in candidates:
-        if path and Path(path).exists() and (Path(path) / "mcguide").exists():
-            print("[DocsReader] 找到官方教程文档: {}".format(path))
-            return path
+    for index, path in enumerate(candidates):
+        candidate = Path(path) if path else None
+        if candidate and candidate.is_dir():
+            resolved = str(candidate.resolve())
+            source = "MODSDK_WIKI_PATH 离线快照" if index == 0 else "仓库内 input/ 离线快照"
+            print("[DocsReader] 找到官方教程文档（{}）".format(source), file=sys.stderr)
+            return resolved
 
-    print("[DocsReader] 未找到官方教程文档，跳过教程加载")
+    print("[DocsReader] 未找到官方教程文档，跳过教程加载", file=sys.stderr)
     return ""
 
 

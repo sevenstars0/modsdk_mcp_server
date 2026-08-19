@@ -84,10 +84,10 @@ SERVER_SYSTEM_TEMPLATE = '''# -*- coding: utf-8 -*-
 
 【重要】本代码遵循 NetEase ModSDK 开发规范：
 - ✅ 仅导入 serverApi，禁止导入 clientApi
-- ✅ GetEngineCompFactory 在模块级缓存
-- ✅ 所有 import 在文件顶部
-- ✅ Tick 逻辑使用质数降帧
-- ✅ 使用 .get() 安全访问字典
+- ✅ 本示例在高频路径复用稳定的 GetEngineCompFactory
+- ✅ 静态依赖置于文件顶部；不把函数内 import 一律判错
+- ✅ 示例耗时 Tick 逻辑按业务精度降频
+- ✅ 可选事件字段使用 .get()；必需字段按官方参数契约访问
 - ✅ Python 2.7 兼容语法
 """
 from __future__ import print_function
@@ -97,7 +97,7 @@ import mod.server.extraServerApi as serverApi
 # 如需与客户端通信，请使用 self.NotifyToClient()
 
 # ============================================================================
-# 【规范】模块级缓存 - 避免重复调用 GetEngineCompFactory()
+# 【示例】高频路径复用稳定的 GetEngineCompFactory
 # ============================================================================
 CF = serverApi.GetEngineCompFactory()
 levelId = serverApi.GetLevelId()
@@ -105,7 +105,7 @@ levelId = serverApi.GetLevelId()
 # ============================================================================
 # 【规范】常量定义 - 避免魔法数字
 # ============================================================================
-TICK_INTERVAL = 7  # Tick 降帧间隔（使用质数）
+TICK_INTERVAL = 7  # 示例间隔；实际值由业务精度和负载决定
 
 ServerSystem = serverApi.GetServerSystemCls()
 
@@ -166,11 +166,11 @@ class {class_name}ServerSystem(ServerSystem):
         """
         Tick 事件处理
         
-        【规范】必须使用降帧，避免每帧执行耗时操作
+        示例：仅当逻辑耗时时按业务精度降频
         """
         self.tick += 1
         
-        # 【规范】使用质数降帧
+        # 示例降频；并不要求所有 Tick 使用固定或质数间隔
         if self.tick % TICK_INTERVAL != 0:
             return
         
@@ -185,9 +185,9 @@ CLIENT_SYSTEM_TEMPLATE = '''# -*- coding: utf-8 -*-
 
 【重要】本代码遵循 NetEase ModSDK 开发规范：
 - ✅ 仅导入 clientApi，禁止导入 serverApi
-- ✅ GetEngineCompFactory 在模块级缓存
-- ✅ 所有 import 在文件顶部
-- ✅ 使用 .get() 安全访问字典
+- ✅ 本示例在高频路径复用稳定的 GetEngineCompFactory
+- ✅ 静态依赖置于文件顶部；不把函数内 import 一律判错
+- ✅ 可选事件字段使用 .get()；必需字段按官方参数契约访问
 - ✅ Python 2.7 兼容语法
 """
 from __future__ import print_function
@@ -197,7 +197,7 @@ import mod.client.extraClientApi as clientApi
 # 如需与服务端通信，请使用 self.NotifyToServer()
 
 # ============================================================================
-# 【规范】模块级缓存 - 避免重复调用 GetEngineCompFactory()
+# 【示例】高频路径复用稳定的 GetEngineCompFactory
 # ============================================================================
 CF = clientApi.GetEngineCompFactory()
 
@@ -258,17 +258,17 @@ EVENT_LISTENER_TEMPLATE = '''# -*- coding: utf-8 -*-
 """
 from __future__ import print_function
 
-import mod.server.extraServerApi as serverApi
+import {api_module} as {api_alias}
 
 
 def register_event_listeners(system):
     """注册事件监听器
     
     Args:
-        system: ServerSystem 实例
+        system: {system_kind} 实例
     """
-    namespace = serverApi.GetEngineNamespace()
-    system_name = serverApi.GetEngineSystemName()
+    namespace = {api_alias}.GetEngineNamespace()
+    system_name = {api_alias}.GetEngineSystemName()
     
     # {event_description}
     system.ListenForEvent(
@@ -304,7 +304,7 @@ from __future__ import print_function
 
 import mod.server.extraServerApi as serverApi
 
-# 模块级缓存
+# 本示例复用稳定工厂
 CF = serverApi.GetEngineCompFactory()
 
 
@@ -368,10 +368,10 @@ CUSTOM_ITEM_TEMPLATE = '''# -*- coding: utf-8 -*-
 """
 from __future__ import print_function
 
-# behavior_pack_{ID}/netease_items_beh/{item_id}.json
+# behavior_pack_{{ID}}/netease_items_beh/{namespace}_{item_id}.json
 ITEM_BEHAVIOR_JSON = """
 {{
-    "format_version": "1.16.0",
+    "format_version": "1.10",
     "minecraft:item": {{
         "description": {{
             "identifier": "{namespace}:{item_id}",
@@ -385,10 +385,10 @@ ITEM_BEHAVIOR_JSON = """
 }}
 """
 
-# resource_pack/netease_items_res/{item_id}.json  
+# resource_pack/netease_items_res/{namespace}_{item_id}.json
 ITEM_RESOURCE_JSON = """
 {{
-    "format_version": "1.16.0",
+    "format_version": "1.10",
     "minecraft:item": {{
         "description": {{
             "identifier": "{namespace}:{item_id}",
@@ -407,7 +407,7 @@ ITEM_RESOURCE_JSON = """
 # 物品使用事件处理
 import mod.server.extraServerApi as serverApi
 
-# 模块级缓存
+# 本示例复用稳定工厂
 CF = serverApi.GetEngineCompFactory()
 
 
@@ -416,12 +416,12 @@ def on_item_use(args):
     
     在 ServerSystem 中监听 ServerItemUseOnEvent 事件
     """
-    player_id = args.get("playerId")
+    player_id = args.get("entityId")
     item_dict = args.get("itemDict")
     
     if item_dict and item_dict.get("itemName") == "{namespace}:{item_id}":
         # 自定义物品使用逻辑
-        print("玩家 {{}} 使用了自定义物品".format(player_id))
+        print("[{namespace}] 玩家 {{}} 使用了自定义物品".format(player_id))
         return True
     
     return False
@@ -435,7 +435,7 @@ CUSTOM_BLOCK_TEMPLATE = '''# -*- coding: utf-8 -*-
 """
 from __future__ import print_function
 
-# behavior_pack_{ID}/netease_blocks_beh/{block_id}.json
+# behavior_pack_{{ID}}/netease_blocks/{namespace}_{block_id}.json
 BLOCK_BEHAVIOR_JSON = """
 {{
     "format_version": "1.16.0",
@@ -456,7 +456,7 @@ BLOCK_BEHAVIOR_JSON = """
 # 方块交互事件处理
 import mod.server.extraServerApi as serverApi
 
-# 模块级缓存
+# 本示例复用稳定工厂
 CF = serverApi.GetEngineCompFactory()
 
 
@@ -471,7 +471,7 @@ def on_block_interact(args):
     
     if block_name == "{namespace}:{block_id}":
         # 自定义方块交互逻辑
-        print("玩家 {{}} 与自定义方块交互，位置: {{}}".format(player_id, pos))
+        print("[{namespace}] 玩家 {{}} 与自定义方块交互，位置: {{}}".format(player_id, pos))
         return True
     
     return False
@@ -502,7 +502,7 @@ class TemplateGenerator:
         class_name = to_camel_case(mod_id)
         project_folder = get_project_folder_name(mod_id)  # 项目根目录：{mod_id}_Script
         
-        # 脚本目录直接放在 behavior_pack 根目录下
+        # 脚本目录直接放在 behavior_pack 根目录下，ModSDK 会从该根目录加载脚本目录。
         script_base = "behavior_pack_{}/{}/".format(mod_id, project_folder)
         
         files = {
@@ -562,9 +562,13 @@ class TemplateGenerator:
     def generate_event_listener(
         event_name: str,
         event_description: str = "事件处理",
-        params: Optional[Dict[str, str]] = None
+        params: Optional[Dict[str, str]] = None,
+        side: str = "server"
     ) -> str:
         """生成事件监听器代码"""
+        if side not in ("server", "client"):
+            raise ValueError("Event listener side must be 'server' or 'client'")
+
         event_handler = event_name.lower().replace("event", "")
         
         params_doc = ""
@@ -576,7 +580,10 @@ class TemplateGenerator:
             event_name=event_name,
             event_description=event_description,
             event_handler=event_handler,
-            event_params=params_doc
+            event_params=params_doc,
+            api_module=("mod.server.extraServerApi" if side == "server" else "mod.client.extraClientApi"),
+            api_alias=("serverApi" if side == "server" else "clientApi"),
+            system_kind=("ServerSystem" if side == "server" else "ClientSystem")
         )
     
     @staticmethod
@@ -752,8 +759,7 @@ ITEM_TEXTURE_ENTRY_TEMPLATE = '''        "{texture_name}": {{
             "textures": "textures/items/{texture_path}"
         }}'''
 
-# 行为包方块 JSON 模板 (网易版 1.10.0)
-# 【重要】网易版方块必须使用 format_version: "1.10.0" 和旧版组件格式
+# 行为包方块 JSON 模板（旧版 1.10.0 对象组件格式）
 BLOCK_BEHAVIOR_JSON_TEMPLATE = '''{{
     "format_version": "1.10.0",
     "minecraft:block": {{
@@ -778,6 +784,49 @@ BLOCK_BEHAVIOR_JSON_TEMPLATE = '''{{
         }}
     }}
 }}'''
+
+# 1.16.0 使用同一组旧组件名，但组件值改为标量。
+BLOCK_BEHAVIOR_JSON_SCALAR_TEMPLATE = '''{{
+    "format_version": "1.16.0",
+    "minecraft:block": {{
+        "description": {{
+            "identifier": "{namespace}:{block_id}",
+            "register_to_create_menu": {register_to_menu},
+            "category": "{category}"
+        }},
+        "components": {{
+            "minecraft:destroy_time": {destroy_time},
+            "minecraft:explosion_resistance": {explosion_resistance},
+            "minecraft:block_light_emission": {light_emission},
+            "minecraft:block_light_absorption": {light_dampening},
+            "minecraft:map_color": "{map_color}"{additional_components}
+        }}
+    }}
+}}'''
+
+# 1.19.20 起使用现代可破坏性组件。
+BLOCK_BEHAVIOR_JSON_MODERN_TEMPLATE = '''{{
+    "format_version": "1.19.20",
+    "minecraft:block": {{
+        "description": {{
+            "identifier": "{namespace}:{block_id}",
+            "menu_category": {{"category": "{menu_category}"}}
+        }},
+        "components": {{
+            "minecraft:destructible_by_mining": {{"seconds_to_destroy": {destroy_time}}},
+            "minecraft:destructible_by_explosion": {{"explosion_resistance": {explosion_resistance}}},
+            "minecraft:light_emission": {light_emission},
+            "minecraft:light_dampening": {light_dampening},
+            "minecraft:map_color": "{map_color}"{additional_components}
+        }}
+    }}
+}}'''
+
+BLOCK_FORMAT_PROFILES = {
+    "legacy_1_10": "1.10.0",
+    "scalar_1_16": "1.16.0",
+    "modern_1_19_20": "1.19.20",
+}
 
 # blocks.json 条目模板
 BLOCKS_JSON_ENTRY_TEMPLATE = '''    "{namespace}:{block_id}": {{
@@ -972,10 +1021,11 @@ class BedrockJsonGenerator:
         map_color: str = "#FFFFFF",
         category: str = "Nature",
         register_to_menu: bool = True,
-        components: Optional[Dict[str, Any]] = None
+        components: Optional[Dict[str, Any]] = None,
+        format_profile: str = "legacy_1_10"
     ) -> str:
         """
-        生成行为包方块 JSON (format_version 1.19.20)
+        按明确的格式档生成行为包方块 JSON。
         
         Args:
             namespace: 命名空间
@@ -988,7 +1038,11 @@ class BedrockJsonGenerator:
             category: 创造栏分类 (Construction/Nature/Equipment/Items)
             register_to_menu: 是否注册到创造栏
             components: 额外组件字典
+            format_profile: legacy_1_10/scalar_1_16/modern_1_19_20
         """
+        if format_profile not in BLOCK_FORMAT_PROFILES:
+            raise ValueError("Unknown block format profile: {}".format(format_profile))
+
         additional = ""
         if components:
             for key, value in components.items():
@@ -1002,7 +1056,13 @@ class BedrockJsonGenerator:
                 else:
                     additional += ",\n            \"{}\": {}".format(key, value)
         
-        return BLOCK_BEHAVIOR_JSON_TEMPLATE.format(
+        template = {
+            "legacy_1_10": BLOCK_BEHAVIOR_JSON_TEMPLATE,
+            "scalar_1_16": BLOCK_BEHAVIOR_JSON_SCALAR_TEMPLATE,
+            "modern_1_19_20": BLOCK_BEHAVIOR_JSON_MODERN_TEMPLATE,
+        }[format_profile]
+
+        return template.format(
             namespace=namespace.lower(),
             block_id=block_id.lower(),
             destroy_time=destroy_time,
@@ -1011,6 +1071,7 @@ class BedrockJsonGenerator:
             light_dampening=light_dampening,
             map_color=map_color,
             category=category,
+            menu_category=category.lower() if register_to_menu else "none",
             register_to_menu=str(register_to_menu).lower(),
             additional_components=additional
         )
@@ -1325,7 +1386,7 @@ SPAWN_RULES_JSON_TEMPLATE = '''{{
 class EntityJsonGenerator:
     """实体 JSON 生成器
     
-    遵循 NetEase ModSDK 3.8 官方文档规范：
+    面向 ModSDK 3.9 / BE 1.21.120 的官方基础结构：
     - format_version: 1.10.0
     - runtime_identifier: 基于哪个原版实体构建
     - 支持 component_groups 和 events

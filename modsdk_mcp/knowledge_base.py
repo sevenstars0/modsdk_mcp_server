@@ -684,8 +684,16 @@ ENTITY_COMPONENTS = {
             "y_max_head_rotation": "Y轴头部最大旋转角度"
         }
     },
+}
+
+# ============================================================================
+# 最佳实践规则
+# ============================================================================
+
+# 3.8 尚未纳入当前版本 profile，仅保留原有历史兼容摘要。
+_LEGACY_BEST_PRACTICES = {
     "modsdk_38_migration": {
-        "name": "ModSDK 3.8 迁移",
+        "name": "ModSDK 3.8 历史迁移",
         "rules": [
             "manifest.json 使用 format_version: 2，避免 3.8 新生物蛋贴图异常",
             "PlayerDestoryBlock 已废弃，使用 PlayerDestroyBlock",
@@ -693,168 +701,14 @@ ENTITY_COMPONENTS = {
             "Set/CancelShearsDestoryBlockSpeed 系列已废弃，使用 Destroy 拼写的新接口",
             "SetCameraPos 前先调用 DepartCamera()，恢复跟随使用 ResetCameraPos()",
             "SetToggleOption 不再支持 GRAPHICS 选项",
-            "物品信息字典 getUserData 可覆盖收纳袋场景，相关背包/容器接口需要按 3.8 文档核对"
-        ]
-    },
-}
-
-# ============================================================================
-# 最佳实践规则
-# ============================================================================
-
-BEST_PRACTICES = {
-    "python27_compatibility": {
-        "name": "Python 2.7 兼容性",
-        "rules": [
-            "禁止使用 f-string（f\"...\"），使用 \"{}\".format() 或 % 格式化",
-            "推荐使用 print() 函数形式（文件顶部添加 from __future__ import print_function 确保兼容），也可使用 print 语句",
-            "禁止使用 type hints（类型注解）",
-            "禁止使用 async/await 语法",
-            "文件顶部添加: # -*- coding: utf-8 -*-"
-        ]
-    },
-    "client_server_separation": {
-        "name": "客户端/服务端分离",
-        "rules": [
-            "ServerSystem 禁止 import clientApi",
-            "ClientSystem 禁止 import serverApi",
-            "跨端通信只能使用事件系统"
-        ]
-    },
-    "performance": {
-        "name": "性能优化",
-        "rules": [
-            "GetEngineCompFactory 必须缓存在文件顶部",
-            "Tick 事件必须降帧（使用质数间隔）",
-            "ServerBlockEntityTickEvent 必须使用坐标加盐",
-            "点对点通信优先，谨慎使用 BroadcastToAllClient",
-            "禁止在函数内 import"
-        ]
-    },
-    "ui_development": {
-        "name": "UI 界面开发",
-        "rules": [
-            "_ui_defs.json 必须放在 resource_pack/ui/ 目录下，不是根目录",
-            "_ui_defs.json 必须使用对象格式 {\"ui_defs\": [...]}，不能是纯数组",
-            "RegisterUI 必须在 UiInitFinished 事件回调中调用，不能在 __init__ 中",
-            "GetBaseUIControl 返回 BaseUIControl，需要 asButton()/asLabel() 转换后才能调用特定方法",
-            "按钮事件绑定使用 asButton().AddTouchEventParams() 和 SetButtonTouchUpCallback()",
-            "文本设置使用 asLabel().SetText()",
-            "关闭界面使用 self.SetRemove()，不要用 clientApi.PopScreen()",
-            "从 ScreenNode 发送事件到服务端需要先 GetSystem() 获取 ClientSystem 再 NotifyToServer()",
-            "防止点击穿透使用 input_panel + modal:true，但不要设置 is_swallow:true 否则子控件无法点击",
-            "UI JSON 中 uiScreenDef 格式为 namespace.screenName（如 territory_list.main）",
-            "【重要】PushScreen 必须延迟执行，建议延迟 0.05 秒，避免与其他 UI 操作冲突导致弹出错误界面",
-            "【重要】PopScreen 会弹出栈顶的 PushScreen UI，如果有多个 Mod UI 可能误弹，建议使用延迟 PushScreen 来保证栈顺序正确"
+            "物品信息字典 getUserData 可覆盖收纳袋场景，相关背包/容器接口需要按 3.8 文档核对",
         ],
-        "common_errors": {
-            "get_screen_def error": "UI 注册时机过早，需要在 UiInitFinished 事件后注册",
-            "PushScreen returns None": "_ui_defs.json 路径或格式错误，或未正确注册 UI",
-            "ui_def is not a list": "_ui_defs.json 格式应为 {\"ui_defs\": [...]} 而非纯数组",
-            "no attribute AddTouchEventParams": "需要先调用 asButton() 转换为 ButtonUIControl",
-            "no attribute SetText": "需要先调用 asLabel() 转换为 LabelUIControl",
-            "no attribute BroadcastEvent": "clientApi 没有 BroadcastEvent，使用 GetSystem().NotifyToServer()",
-            "关闭UI影响原版界面": "使用 self.SetRemove() 而非 PopScreen()",
-            "点击穿透到游戏世界": "使用 input_panel + modal:true",
-            "子控件按钮无法点击": "不要在根 input_panel 上设置 is_swallow:true"
-        },
-        "file_structure": {
-            "resource_pack/ui/_ui_defs.json": "UI 定义清单，格式: {\"ui_defs\": [\"ui/xxx.json\"]}",
-            "resource_pack/ui/xxx.json": "UI 布局文件，定义 namespace 和控件",
-            "behavior_pack/ModName_Script/scripts/ModName/client.py": "ClientSystem，注册 UI 和监听事件",
-            "behavior_pack/ModName_Script/scripts/ModName/xxx_ui.py": "ScreenNode 子类，UI 逻辑"
-        },
-        "code_examples": {
-            "register_ui": """
-# 在 ClientSystem 中
-def __init__(self, namespace, systemName):
-    ClientSystem.__init__(self, namespace, systemName)
-    # 监听 UI 初始化完成事件
-    self.ListenForEvent(clientApi.engineNamespace, clientApi.engineSystemName, 
-                        "UiInitFinished", self, self.on_ui_init_finished)
-
-def on_ui_init_finished(self, args):
-    # UI 系统初始化完成后才能注册
-    clientApi.RegisterUI("ModNamespace", "UIKey", 
-                         "ModName.ui_file.ScreenClass", "namespace.main")
-""",
-            "button_bindining": """
-# 在 ScreenNode 子类中
-def _bind_button(self):
-    btn_base = self.GetBaseUIControl("/path/to/button")
-    if btn_base:
-        btn = btn_base.asButton()  # 转换为 ButtonUIControl
-        if btn:
-            btn.AddTouchEventParams({"isSwallow": True})
-            btn.SetButtonTouchUpCallback(self._on_click)
-""",
-            "notify_server": """
-# 从 ScreenNode 发送事件到服务端
-def _notify_server(self, event_name, data):
-    client_system = clientApi.GetSystem("ModNamespace", "ClientSystemName")
-    if client_system:
-        client_system.NotifyToServer(event_name, data)
-""",
-            "close_ui": """
-# 安全关闭当前界面
-def _on_close_click(self, args):
-    self.SetRemove()  # 不要用 clientApi.PopScreen()
-""",
-            "delayed_push_screen": """
-# 【重要】PushScreen 必须延迟执行，避免与其他 UI 冲突
-def _open_my_ui(self, data):
-    ui_data = data  # 保存数据供回调使用
-    
-    def do_push_screen():
-        screen = clientApi.PushScreen("ModNamespace", "UIKey")
-        if screen:
-            self._current_ui = screen
-            # 设置数据需要再延迟一帧
-            def set_data():
-                if self._current_ui:
-                    self._current_ui.SetData(ui_data)
-            gameComp.AddTimer(0.05, set_data)
-    
-    # 延迟 0.05 秒执行 PushScreen
-    gameComp = CF.CreateGame(levelId)
-    if gameComp:
-        gameComp.AddTimer(0.05, do_push_screen)
-""",
-            "ui_json_structure": """
-{
-    "namespace": "my_ui",
-    "main": {
-        "type": "screen",
-        "is_showing_menu": true,
-        "controls": [{ "root@my_ui.root_panel": {} }]
-    },
-    "root_panel": {
-        "type": "input_panel",
-        "size": ["100%", "100%"],
-        "modal": true,  // 模态框，限制输入
-        "controls": [
-            { "bg@my_ui.bg_image": {} },
-            { "content@my_ui.content_panel": {} }
-        ]
-    },
-    "bg_image": {
-        "type": "image",
-        "texture": "textures/ui/Black",
-        "size": ["100%", "100%"],
-        "alpha": 0.6
-    }
-}
-"""
-        }
     },
 }
 
-# ============================================================================
-# 查询函数
-# ============================================================================
 
 def search_component(query: str, component_type: str = "all") -> List[Dict]:
-    """搜索组件（带评分排序：精确ID > ID子串 > 名称匹配 > 描述匹配）"""
+    """搜索组件（带评分排序：精确ID > ID子串 > 名称匹配 > 描述匹配）。"""
     scored_results = []
     query_lower = query.lower()
 
@@ -865,8 +719,9 @@ def search_component(query: str, component_type: str = "all") -> List[Dict]:
         sources.append(("block", BLOCK_COMPONENTS))
     if component_type in ["all", "entity"]:
         sources.append(("entity", ENTITY_COMPONENTS))
-    if component_type in ["all", "netease"]:
+    if component_type in ["all", "netease", "netease_item"]:
         sources.append(("netease_item", NETEASE_ITEM_COMPONENTS))
+    if component_type in ["all", "netease", "netease_block"]:
         sources.append(("netease_block", NETEASE_BLOCK_COMPONENTS))
 
     for source_type, components in sources:
@@ -876,16 +731,12 @@ def search_component(query: str, component_type: str = "all") -> List[Dict]:
             comp_name_lower = comp_data.get("name", "").lower()
             comp_desc_lower = comp_data.get("description", "").lower()
 
-            # 精确 ID 匹配
             if query_lower == comp_id_lower:
                 score = 100
-            # ID 子串匹配
             elif query_lower in comp_id_lower:
                 score = 20
-            # 名称匹配
             elif query_lower in comp_name_lower:
                 score = 15
-            # 描述匹配
             elif query_lower in comp_desc_lower:
                 score = 10
 
@@ -896,25 +747,126 @@ def search_component(query: str, component_type: str = "all") -> List[Dict]:
                     **comp_data
                 }))
 
-    # 按分数降序排序
-    scored_results.sort(key=lambda x: x[0], reverse=True)
-    return [r[1] for r in scored_results]
+    scored_results.sort(key=lambda item: item[0], reverse=True)
+    return [item[1] for item in scored_results]
 
 
 def get_component_info(component_id: str) -> Dict:
-    """获取组件详情"""
-    for components in [ITEM_COMPONENTS, BLOCK_COMPONENTS, ENTITY_COMPONENTS, 
-                       NETEASE_ITEM_COMPONENTS, NETEASE_BLOCK_COMPONENTS]:
+    """获取组件详情。"""
+    for components in [
+        ITEM_COMPONENTS,
+        BLOCK_COMPONENTS,
+        ENTITY_COMPONENTS,
+        NETEASE_ITEM_COMPONENTS,
+        NETEASE_BLOCK_COMPONENTS,
+    ]:
         if component_id in components:
             return {"id": component_id, **components[component_id]}
     return {}
 
 
+_BEST_PRACTICE_CATEGORY_SPECS = {
+    "python27_compatibility": {
+        "name": "Python 2.7 兼容性",
+        "domains": ("python",),
+    },
+    "client_server_separation": {
+        "name": "客户端/服务端分离",
+        "rule_ids": (
+            "ARCH-SIDE-001",
+            "ARCH-CROSS-001",
+            "MULTIPLAYER-AUTHORITY-001",
+        ),
+    },
+    "performance": {
+        "name": "性能优化",
+        "domains": ("performance",),
+    },
+    "ui_development": {
+        "name": "JSON UI 开发",
+        "domains": ("json_ui",),
+    },
+    "modsdk_39_migration": {
+        "name": "ModSDK 3.9 / BE 1.21.120 迁移",
+        "rule_ids": (
+            "ARCH-API-001",
+            "JSON-BIOME-001",
+            "JSON-BLOCK-FORMAT-001",
+            "JSON-FORMAT-001",
+            "JSON-ID-001",
+            "JSON-ITEM-FORMAT-001",
+            "PY-COMPAT-001",
+            "PY-EVENT-001",
+            "PY-IMPORT-001",
+            "UI-SCROLL-001",
+        ),
+    },
+}
+
+
+def _format_registry_practice(rule: Dict) -> str:
+    """将结构化规则投影为旧工具可显示的一行文本。"""
+    parts = [
+        "[{}][{}/{}] {}".format(
+            rule["id"], rule["enforcement"], rule["authority"], rule["title"]
+        )
+    ]
+    if rule.get("do"):
+        parts.append("应做：{}".format("；".join(rule["do"])))
+    if rule.get("avoid"):
+        parts.append("避免：{}".format("；".join(rule["avoid"])))
+    parts.append("来源：{}".format(", ".join(rule["source_ids"])))
+    return "；".join(parts)
+
+
+def _project_best_practice_category(category: str) -> Dict:
+    """从唯一注册表生成旧 category 的兼容视图。"""
+    from .standards import get_version_profile, list_standard_rules
+
+    if category == "modsdk_38_migration":
+        legacy = _LEGACY_BEST_PRACTICES[category]
+        return {
+            "name": legacy["name"],
+            "rules": list(legacy["rules"]),
+            "projection": "legacy_3.8_compatibility",
+            "target_version": "3.8",
+        }
+
+    spec = _BEST_PRACTICE_CATEGORY_SPECS.get(category)
+    if spec is None:
+        return {}
+
+    rules = list_standard_rules(
+        version="3.9",
+        domains=spec.get("domains"),
+        rule_ids=spec.get("rule_ids"),
+    )
+    projected = {
+        "name": spec["name"],
+        "rules": [_format_registry_practice(rule) for rule in rules],
+        "rule_ids": [rule["id"] for rule in rules],
+        "projection": "standard_registry",
+        "target_version": "3.9",
+    }
+    if category == "modsdk_39_migration":
+        profile = get_version_profile("3.9")
+        projected["source_boundary"] = profile["source_boundary"]
+    return projected
+
+
 def get_best_practices(category: str = "all") -> Dict:
-    """获取最佳实践"""
+    """从规范注册表返回旧 get_best_practices 的兼容投影。"""
+    categories = (
+        "python27_compatibility",
+        "client_server_separation",
+        "performance",
+        "ui_development",
+        "modsdk_38_migration",
+        "modsdk_39_migration",
+    )
     if category == "all":
-        return BEST_PRACTICES
-    return BEST_PRACTICES.get(category, {})
+        return {name: _project_best_practice_category(name) for name in categories}
+    return _project_best_practice_category(category)
 
 
 # ============================================================================
@@ -925,9 +877,11 @@ ARCHITECTURE_PATTERNS: Dict[str, Dict[str, str]] = {
     "跨端通信": {
         "title": "客户端/服务端跨端通信",
         "description": "ModSDK 是 C/S 双端架构，客户端事件无法直接调用服务端API。必须通过事件系统通信。",
-        "pattern": """
-# === 服务端 (ServerSystem) ===
+        "artifacts": {
+            "server.py": """# -*- coding: utf-8 -*-
 import mod.server.extraServerApi as serverApi
+
+ServerSystem = serverApi.GetServerSystemCls()
 
 class MyServerSystem(ServerSystem):
     def __init__(self, namespace, systemName):
@@ -939,9 +893,11 @@ class MyServerSystem(ServerSystem):
         playerId = args['playerId']
         # 处理完后通知客户端
         self.NotifyToClient(playerId, 'ServerResponseEvent', {'result': 'ok'})
-
-# === 客户端 (ClientSystem) ===
+""",
+            "client.py": """# -*- coding: utf-8 -*-
 import mod.client.extraClientApi as clientApi
+
+ClientSystem = clientApi.GetClientSystemCls()
 
 class MyClientSystem(ClientSystem):
     def __init__(self, namespace, systemName):
@@ -956,14 +912,16 @@ class MyClientSystem(ClientSystem):
         # 收到服务端响应
         pass
 """,
+        },
     },
     "组件使用": {
         "title": "GetEngineCompFactory 组件创建模式",
-        "description": "所有引擎组件必须通过 CompFactory 创建，且 CompFactory 必须在模块级缓存。",
+        "description": "引擎组件通过 CompFactory 创建；高频路径可复用工厂和稳定组件。",
         "pattern": """
+# -*- coding: utf-8 -*-
 import mod.server.extraServerApi as serverApi
 
-# 模块级缓存（禁止在函数内调用 GetEngineCompFactory）
+# 高频路径复用工厂
 CF = serverApi.GetEngineCompFactory()
 levelId = serverApi.GetLevelId()
 
@@ -986,6 +944,7 @@ def create_particle(pos):
         "title": "自定义UI完整开发流程",
         "description": "UI开发需要：JSON定义 → _ui_defs注册 → Python注册 → 创建 → 控件操作",
         "pattern": """
+# -*- coding: utf-8 -*-
 # === Step 1: 资源包 resource_pack/ui/myUI.json ===
 # {
 #     "namespace": "myUI",
@@ -1011,7 +970,7 @@ def create_particle(pos):
 # === Step 3: Python 客户端代码 ===
 import mod.client.extraClientApi as clientApi
 
-# 在 UiInitFinished 事件中注册
+# UiInitFinished 是常见注册时机；硬约束是 RegisterUI 先于 CreateUI。
 def OnUiInitFinished(self, args):
     clientApi.RegisterUI('myMod', 'myUI', 'myMod.MyUIScreen', 'myUI.main')
 
@@ -1020,15 +979,17 @@ def OpenMyUI(self, playerId):
     clientApi.CreateUI('myMod', 'myUI', {'playerId': playerId})
 
 # === Step 4: ScreenNode 控件操作 ===
+ScreenNode = clientApi.GetScreenNodeCls()
+
 class MyUIScreen(ScreenNode):
     def Create(self):
-        # 按钮事件
-        self.AddTouchEventHandler('/close_btn', self.OnCloseClick, {"isSwallow": True})
+        button = self.GetBaseUIControl('/close_btn').asButton()
+        button.AddTouchEventParams({"isSwallow": True})
+        button.SetButtonTouchUpCallback(self.OnCloseClick)
 
     def OnCloseClick(self, args):
-        touchEvent = args["TouchEvent"]
-        if touchEvent == TouchEvent.TouchUp:
-            self.SetRemove()  # 关闭UI
+        # 该节点由 CreateUI 创建，按对应生命周期移除。
+        self.SetRemove()
 
     def UpdateTitle(self, text):
         ctrl = self.GetBaseUIControl('/title')
@@ -1039,11 +1000,13 @@ class MyUIScreen(ScreenNode):
         "title": "自定义实体创建完整流程",
         "description": "创建实体 → 设置属性 → 防清除 → 监听死亡",
         "pattern": """
+# -*- coding: utf-8 -*-
+import mod.server.extraServerApi as serverApi
+
 CF = serverApi.GetEngineCompFactory()
 
 def spawn_boss(pos, dimensionId):
     entityId = CF.CreateEngineEntityByTypeStr(
-        levelId,
         'mymod:dark_boss',  # 对应 behavior_pack/entities/ 中的JSON
         pos, (0, 0), dimensionId,
         isNpc=False, isGlobal=True  # 全局实体不会被卸载
@@ -1068,20 +1031,24 @@ def spawn_boss(pos, dimensionId):
     },
     "定时任务": {
         "title": "定时器与Tick降帧",
-        "description": "使用 AddTimer/AddRepeatedTimer 或 OnScriptTickServer + 质数降帧",
+        "description": "使用官方 GameComponent 定时器，或按业务精度降低 Tick 中耗时逻辑频率",
         "pattern": """
-import apolloCommon.commonNetgameApi as commonApi
+# -*- coding: utf-8 -*-
+import mod.server.extraServerApi as serverApi
+
+CF = serverApi.GetEngineCompFactory()
+gameComp = CF.CreateGame(serverApi.GetLevelId())
 
 # 方式1: AddTimer（一次性延时）
-timer = commonApi.AddTimer(3.0, self.OnTimerEnd)  # 3秒后执行
+timer = gameComp.AddTimer(3.0, self.OnTimerEnd)  # 3秒后执行
 
 # 方式2: AddRepeatedTimer（重复定时）
-timer = commonApi.AddRepeatedTimer(1.0, self.OnRepeat)  # 每秒执行
+timer = gameComp.AddRepeatedTimer(1.0, self.OnRepeat)  # 每秒执行
 
 # 取消定时器
-commonApi.CancelTimer(timer)
+gameComp.CancelTimer(timer)
 
-# 方式3: Tick降帧（每N帧执行一次，用质数避免多系统同帧）
+# 方式3: 仅对耗时 Tick 逻辑按业务精度降频
 def OnTickServer(self):
     self.tick += 1
     if self.tick % 7 == 0:  # 每7帧执行
@@ -1092,7 +1059,11 @@ def OnTickServer(self):
         "title": "在世界中生成掉落物品",
         "description": "生成世界中的物品实体（掉落物）或直接放入玩家背包",
         "pattern": """
+# -*- coding: utf-8 -*-
+import mod.server.extraServerApi as serverApi
+
 CF = serverApi.GetEngineCompFactory()
+levelId = serverApi.GetLevelId()
 
 # 方式1: 在世界中生成物品实体（掉落物）
 def drop_item_at(pos, dimensionId, itemName, count=1, auxValue=0):
@@ -1111,12 +1082,23 @@ def give_item(playerId, itemName, count=1):
     return itemComp.SpawnItemToPlayerInv(itemDict, playerId)
 
 # 方式3: 使用战利品表随机掉落
-def spawn_loot(pos, entityIdentifier, killerId=None):
-    comp = CF.CreateGame(levelId)
+def spawn_loot(pos, entityIdentifier, playerId, killerId=None):
+    comp = CF.CreateActorLoot(playerId)
     return comp.SpawnLootTable(pos, entityIdentifier, killerId)
 """,
     },
 }
+
+
+def get_architecture_pattern_artifacts(pattern_name: str) -> Dict[str, str]:
+    """返回匹配架构模式的可独立校验 Python 产物。"""
+    pattern_lower = pattern_name.lower()
+    for key, val in ARCHITECTURE_PATTERNS.items():
+        if pattern_lower in key.lower() or pattern_lower in val.get("title", "").lower():
+            if val.get("artifacts"):
+                return dict(val["artifacts"])
+            return {"example.py": val["pattern"]}
+    return {}
 
 
 def get_architecture_pattern(pattern_name: str = "") -> str:
@@ -1133,8 +1115,15 @@ def get_architecture_pattern(pattern_name: str = "") -> str:
     pattern_lower = pattern_name.lower()
     for key, val in ARCHITECTURE_PATTERNS.items():
         if pattern_lower in key.lower() or pattern_lower in val.get("title", "").lower():
-            result = "## {}\n\n{}\n\n```python\n{}\n```".format(
-                val["title"], val["description"], val["pattern"].strip())
+            if val.get("artifacts"):
+                parts = []
+                for filename, code in val["artifacts"].items():
+                    parts.append("### `{}`\n\n```python\n{}\n```".format(filename, code.strip()))
+                pattern_text = "\n\n".join(parts)
+            else:
+                pattern_text = "```python\n{}\n```".format(val["pattern"].strip())
+            result = "## {}\n\n{}\n\n{}".format(
+                val["title"], val["description"], pattern_text)
             return result
 
     return "未找到模式 '{}'。可用模式：{}".format(

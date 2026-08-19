@@ -2,7 +2,7 @@
 
 > **Model Context Protocol Server for 我的世界中国版（网易）ModSDK 开发**
 
-为 AI 编程助手（Claude Desktop、Cursor 等）提供 **文档检索、代码生成、代码审查** 能力，显著提升 NetEase ModSDK 开发效率。
+为 AI 编程助手提供 ModSDK 3.9 / BE 1.21.120 的**版本化开发指导、官方文档检索、产物生成与统一校验**。运行时完全离线，只读取仓库内快照。
 
 ---
 
@@ -15,8 +15,9 @@
 | 🔧 **工具 & 武器生成** | 一键生成剑、镐、斧、锹、锄、弓、盔甲、食物、可投掷物品 JSON |
 | 📋 **配方 & 战利品表** | 生成有序/无序合成配方、熔炉配方、战利品表、生成规则 |
 | 🔬 **代码审查** | 检测 Python 2.7 兼容性、客户端/服务端混用、性能反模式 |
+| 🧭 **版本化指导** | 按目标、领域和端侧选择规则，并返回来源等级与 3.9 证据边界 |
 | 📚 **组件百科** | 查询物品/方块/实体/网易特有组件的用法和配置 |
-| ⚡ **最佳实践** | 内置官方性能优化规范，生成代码自动遵循 |
+| ⚡ **最佳实践** | 从版本化注册表投影官方规则、MCP 策略与带边界的工程建议 |
 
 ---
 
@@ -179,11 +180,14 @@ python "<PROJECT_ROOT>/start_mcp.py" --sse
 | 工具 | 描述 |
 |------|------|
 | `search_docs` | 搜索文档（支持模糊匹配、驼峰分词、中文） |
+| `search_api` | 搜索结构化 API/事件索引 |
+| `get_api_detail` | 读取同名多端 API/事件的签名、备注、示例和来源元数据 |
 | `get_document` | 获取指定文档完整内容 |
 | `get_document_section` | 获取文档指定章节 |
 | `get_document_structure` | 获取文档目录结构 |
 | `list_documents` | 列出所有可用文档 |
 | `reload_documents` | 重新加载文档索引 |
+| `get_development_guidance` | 按目标、领域、端侧和版本返回最相关规则与验证建议 |
 
 ### 代码生成
 
@@ -226,12 +230,12 @@ python "<PROJECT_ROOT>/start_mcp.py" --sse
 
 | 工具 | 描述 |
 |------|------|
-| `review_code` | 审查代码（Python 2.7 兼容性、架构、性能） |
-| `get_best_practices` | 获取最佳实践规则 |
+| `review_code` | 统一审查显式传入的 Python/JSON 产物 |
+| `get_best_practices` | 获取注册表规则的旧接口兼容投影 |
 | `search_components` | 搜索基岩版组件 |
 | `get_component_details` | 获取组件详细信息 |
 | `list_components` | 列出所有可用组件 |
-| `list_modsdk_events` | 列出常用事件 |
+| `get_architecture_pattern` | 获取并校验核心架构示例 |
 
 ---
 
@@ -244,15 +248,18 @@ ModSDK MCP Server/
 │   ├── __main__.py                 # python -m 入口
 │   ├── server.py                   # MCP Server 主程序（工具注册、请求处理）
 │   ├── docs_reader.py              # 文档读取与搜索引擎
-│   ├── knowledge_base.py           # 组件知识库 & 最佳实践规则
+│   ├── standards.py                # 严格加载版本化规范注册表
+│   ├── guidance.py                 # 规则筛选与稳定 guidance JSON
+│   ├── validation.py               # Python/JSON 统一产物校验
+│   ├── knowledge_base.py           # 组件知识库 & 最佳实践兼容投影
 │   └── templates.py                # 代码模板 & JSON 生成器
 ├── docs/                           # ModSDK 官方文档（Markdown）
 │   ├── 接口/                       #   API 接口文档
 │   ├── 事件/                       #   事件文档
 │   ├── 枚举值/                     #   枚举值文档
 │   └── 更新信息/                   #   版本更新日志
-├── standard/                       # 官方开发规范文档
-├── skills/                         # Claude Skills 文件
+├── standard/registry/              # 唯一规范源、版本配置与白名单快照
+├── skills/                         # 兼容说明；不作为运行时规范源
 ├── start_mcp.py                    # Agent专用启动入口
 ├── .mcp.json                       # MCP 配置
 ├── requirements.txt                # Python 依赖
@@ -269,8 +276,6 @@ ModSDK MCP Server/
 | 变量名 | 说明 | 默认值 |
 |--------|------|--------|
 | `MODSDK_DOCS_PATH` | ModSDK 文档目录路径 | `./docs` |
-| `MODSDK_SKILLS_PATH` | Skills 文件目录路径 | `./skills` |
-| `MODSDK_STANDARD_PATH` | Standard 文档目录路径 | `./standard` |
 | `MCP_HOST` | SSE 模式监听地址 | `0.0.0.0` |
 | `MCP_PORT` | SSE 模式监听端口 | `8000` |
 
@@ -278,19 +283,18 @@ ModSDK MCP Server/
 
 ## 🎯 内置代码规范
 
-MCP Server 生成的所有代码 **自动遵循** 以下网易 ModSDK 强制规范：
+MCP Server 的生成器统一经过结构感知校验。只有可确定证明的严重违规以及项目明确禁止的字符串前缀会阻断；性能、JSON UI 和生命周期工程建议默认告警或人工确认。
 
 | 规范 | 说明 |
 |------|------|
 | **客户端/服务端分离** | ServerSystem 禁止 import clientApi，反之亦然 |
-| **CompFactory 缓存** | `CF = serverApi.GetEngineCompFactory()` 模块级缓存 |
-| **import 顶部化** | 所有 import 必须在文件顶部，禁止函数内 import |
-| **Tick 降帧** | Tick 事件使用质数取模降帧 |
-| **BlockTick 加盐** | ServerBlockEntityTickEvent 使用坐标哈希加盐 |
+| **Python 2.7 兼容** | 禁止真实 `u/U/ur/ru` 字符串前缀及 Python 3 专属语法，文件含 UTF-8 声明 |
+| **精确 import 白名单** | 使用仓库内 456 项官方快照；项目模块须显式声明 |
+| **上下文性能告警** | 仅在循环、Tick 或高频事件上下文充分时提示刷屏、重复创建或降频 |
 | **点对点通信** | 优先 `NotifyToClient`，慎用 `BroadcastToAllClient` |
-| **Python 2.7 兼容** | 禁止 f-string、type hints、print() 函数 |
+| **JSON 格式档** | 基础物品 1.10；方块支持 legacy_1_10、scalar_1_16、modern_1_19_20 |
 
-> 📚 完整规范见 `standard/` 目录或通过 `get_best_practices` 工具查询。
+> `standard/registry/` 是唯一规范源。优先使用 `get_development_guidance`；`get_best_practices` 仅保留兼容投影。
 
 ---
 

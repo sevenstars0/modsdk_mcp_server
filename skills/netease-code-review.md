@@ -18,90 +18,25 @@
 
 ### 🔴 严重问题（CRITICAL）
 
-必须立即修复，否则会导致严重的性能问题或运行错误。
+只阻断可以由产物本身确定证明的问题：
 
-#### 1. 客户端/服务端混用
+- Python 文件缺少 UTF-8 编码声明。
+- 真实字符串字面量使用 `u/U/ur/ru` 前缀，或使用 f-string、类型注解、async/await、海象运算符等 Python 3 专属语法。
+- import 不在官方精确白名单，且调用方没有通过 `project_modules` 声明为项目模块。
+- ServerSystem 导入客户端 API，或 ClientSystem 导入服务端 API。
+- 使用禁止的动态导入方式，或使用已由官方事件文档证实的错误字段。
+- JSON 无法解析、缺少相应内容类型的标识符，或 format_version 与组件形状明确冲突。
 
-```python
-# ❌ 严重错误：ServerSystem 中导入 clientApi
-import mod.client.extraClientApi as clientApi
-
-class MyServerSystem(ServerSystem):
-    def DoSomething(self):
-        clientApi.xxx()  # 服务端无法调用客户端 API
-```
-
-**诊断**：检查 import 语句，ServerSystem 文件不应包含 `clientApi`
-
-**修复**：使用事件通信 `NotifyToClient()` 通知客户端执行操作
-
----
-
-#### 2. GetEngineCompFactory 未缓存
-
-```python
-# ❌ 严重错误：每次调用都创建 Factory
-def OnTick(self):
-    comp = serverApi.GetEngineCompFactory().CreatePos(entityId)
-    pos = comp.GetPos()
-```
-
-**诊断**：搜索 `GetEngineCompFactory()` 调用位置，检查是否在方法内
-
-**修复**：
-```python
-# ✅ 正确：模块级缓存
-CF = serverApi.GetEngineCompFactory()
-
-def OnTick(self):
-    comp = CF.CreatePos(entityId)
-    pos = comp.GetPos()
-```
-
----
-
-#### 3. 函数内 import
-
-```python
-# ❌ 严重错误：每次调用都执行 import
-def OnPlayerJoin(self, args):
-    import mod.server.extraServerApi as serverApi  # 性能损耗
-    serverApi.xxx()
-```
-
-**诊断**：检查函数/方法内部是否有 `import` 语句
-
-**修复**：将所有 import 移到文件顶部
-
----
-
-#### 4. Tick 事件无降帧
-
-```python
-# ❌ 严重错误：每帧都执行耗时操作
-def OnTickServer(self):
-    self.CheckAllPlayers()      # 每帧检查所有玩家
-    self.SaveToDatabase()       # 每帧写数据库
-```
-
-**诊断**：检查 `OnTickServer`/`OnTickClient` 方法中是否有无条件执行的耗时操作
-
-**修复**：
-```python
-# ✅ 正确：使用质数降帧
-def OnTickServer(self):
-    self.tick += 1
-    if self.tick % 7 == 0:
-        self.CheckAllPlayers()
-    if self.tick % 600 == 0:  # 约30秒
-        self.SaveToDatabase()
-```
-
----
+`review_code` 只审查显式传入的文本，不接受工作区路径，也不扫描目录。
 
 ### 🟠 警告问题（WARNING）
 
-建议修复，可能导致性能下降或维护困难。
+警告需要足够上下文，不得把工程建议冒充运行错误：
+
+- 只有工厂或组件创建位于循环、Tick 或高频事件时，才提示评估缓存。
+- 函数内 import 不再一律判错；只有热点路径中的重复执行才提示调整。
+- Tick 不需要统一使用质数间隔；仅当其中存在已识别的耗时操作时提示按业务精度降频。
+- `print()` 本身允许；只有循环、Tick 或高频事件中的刷屏诊断才警告，并建议稳定日志前缀。
 
 #### 5. BroadcastToAllClient 滥用
 

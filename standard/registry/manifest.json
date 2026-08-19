@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0",
+  "registry_version": "2026.08.17",
+  "default_version": "3.9",
+  "source_file": "sources.json",
+  "version_files": {
+    "3.9": "versions/3.9.json"
+  },
+  "rule_files": [
+    "rules/python.json",
+    "rules/architecture.json",
+    "rules/json-content.json",
+    "rules/json-ui.json"
+  ],
+  "snapshot_files": {
+    "python_module_whitelist": "snapshots/python-module-whitelist.json"
+  },
+  "required_rule_fields": [
+    "id",
+    "title",
+    "domain",
+    "sides",
+    "artifact_types",
+    "versions",
+    "severity",
+    "enforcement",
+    "authority",
+    "conditions",
+    "do",
+    "avoid",
+    "positive_examples",
+    "negative_examples",
+    "keywords",
+    "source_ids",
+    "detector"
+  ],
+  "required_source_fields": [
+    "id",
+    "title",
+    "authority",
+    "url",
+    "last_modified",
+    "retrieved_at",
+    "notes"
+  ],
+  "required_version_profile_fields": [
+    "version",
+    "bedrock_version",
+    "status",
+    "released_at",
+    "runtime_evidence_status",
+    "source_ids",
+    "aliases"
+  ],
+  "domains": [
+    "python",
+    "architecture",
+    "api_event",
+    "json_content",
+    "json_ui",
+    "performance",
+    "multiplayer"
+  ],
+  "sides": [
+    "client",
+    "server",
+    "common",
+    "cross_side"
+  ],
+  "artifact_types": [
+    "python",
+    "behavior_json",
+    "resource_json",
+    "manifest_json",
+    "ui_json",
+    "ui_python",
+    "ui_defs_json",
+    "mixed"
+  ],
+  "severities": [
+    "critical",
+    "error",
+    "warning",
+    "info"
+  ],
+  "enforcements": [
+    "block",
+    "warn",
+    "guide",
+    "manual"
+  ],
+  "authorities": [
+    {
+      "id": "official_runtime",
+      "rank": 600,
+      "blocking_eligible": true,
+      "description": "目标版本可读运行时源码直接确认的行为。"
+    },
+    {
+      "id": "official_doc",
+      "rank": 500,
+      "blocking_eligible": true,
+      "description": "网易开发者官网公开规范、API 文档和审核白名单。"
+    },
+    {
+      "id": "curated_policy",
+      "rank": 400,
+      "blocking_eligible": true,
+      "description": "本 MCP 明确采纳并版本化维护的通用开发策略。"
+    },
+    {
+      "id": "runtime_evidence",
+      "rank": 300,
+      "blocking_eligible": false,
+      "description": "跨项目真实运行、审核或交付结果形成的可复用事实；只能警告或人工验收。"
+    },
+    {
+      "id": "bedrock_reference",
+      "rank": 200,
+      "blocking_eligible": false,
+      "description": "Mojang Bedrock 官方资料，只能作为上游参考。"
+    },
+    {
+      "id": "community_reference",
+      "rank": 100,
+      "blocking_eligible": false,
+      "description": "社区资料，只能用于概念和实践参考。"
+    }
+  ],
+  "detectors": [
+    "json.biome_namespace",
+    "json.block_profile",
+    "json.identifier",
+    "json.item_format",
+    "json.parse",
+    "python.cross_side_import",
+    "python.dynamic_import",
+    "python.encoding",
+    "python.event_fields",
+    "python.high_frequency_print",
+    "python.import_whitelist",
+    "python.python3_syntax",
+    "python.tokenize",
+    "python.unicode_prefix"
+  ],
+  "content_policy": {
+    "reject_local_coupling": true,
+    "default_import_policy": "deny",
+    "runtime_network_access": false
+  }
+}

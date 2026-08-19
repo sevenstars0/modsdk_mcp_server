@@ -4,7 +4,9 @@
 """
 
 import asyncio
+import json
 import os
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from mcp.server import Server
@@ -25,11 +27,11 @@ from .knowledge_base import (
     ENTITY_COMPONENTS,
     NETEASE_ITEM_COMPONENTS,
     NETEASE_BLOCK_COMPONENTS,
-    BEST_PRACTICES,
     search_component,
     get_component_info,
     get_best_practices,
     get_architecture_pattern,
+    get_architecture_pattern_artifacts,
 )
 from .templates import (
     generate_mod_project,
@@ -50,6 +52,7 @@ from .templates import (
     # 统一高级物品生成函数
     generate_typed_item_json,
 )
+from .validation import Artifact, ValidationReport, get_registered_detectors, validate_artifacts
 
 
 # 是否暴露 generate 系列工具（默认关闭以节省上下文，设 MODSDK_ENABLE_GENERATE_TOOLS=1 启用）
@@ -58,75 +61,21 @@ _ENABLE_GENERATE = os.environ.get("MODSDK_ENABLE_GENERATE_TOOLS", "") == "1"
 # 创建 MCP Server 实例
 server = Server(
     "minecraft-modsdk",
-    instructions="""你是 NetEase ModSDK（我的世界中国版）开发助手。
+    instructions="""你是网易《我的世界》ModSDK 3.9（BE 1.21.120）开发助手。
 
-【重要】ModSDK 使用 Python 2.7 运行时，生成代码时必须确保兼容性！
+固定工作流：
+1. 先调用 get_development_guidance 获取与目标、端侧和产物匹配的规则。
+2. 涉及 API 或事件时，用 search_api/get_api_detail 查证名称、端侧、参数和备注；需要正文时再用 search_docs/get_document_section。
+3. 生成产物后读取随附校验报告；critical 必须修复后再输出，warning 说明证据边界和人工验证项。
 
-【最高优先级：文档优先原则】
-
-⚠️ 在编写任何代码之前，必须先查阅文档！这是强制性要求。
-
-1. **API 接口必须阅读 docs/接口 下的文档**
-   - **首选**: 加载 api-index://full Resource 浏览完整API索引，用自身语义理解直接找到正确API名
-   - **次选**: 用 search_api 关键词搜索（适合探索性搜索）
-   - 找到API名后，用 get_api_detail(name) 获取完整参数签名
-   - 禁止假设参数名，必须通过 get_api_detail 查证后再使用
-
-2. **事件参数必须查 docs 文档**
-   - 不同事件的参数名不一致！例如：
-     * ServerPlayerTryDestroyBlockEvent 使用 "playerId" 和 "cancel"
-     * ServerItemUseOnEvent 使用 "entityId" 和 "ret"
-   - 使用 get_api_detail(事件名) 获取精确参数定义
-
-3. **参考文档必须同时查阅 docs 和 bedrock-wiki-wiki**
-   - docs/ 下包含网易版 ModSDK 的官方接口文档、事件文档、枚举值文档
-   - bedrock-wiki-wiki/ 下包含 Bedrock 版社区 Wiki 的实体、方块、物品、UI 等参考资料
-   - ⚠️ bedrock-wiki-wiki 中的内容版本不得大于 1.21.90，超出此版本的特性在网易版中不可用
-   - 使用 search_docs 搜索文档时会同时搜索两个来源
-   - 使用 bedrock-wiki://{topic} Resource 可直接加载 Wiki 专题内容
-
-4. **组件和 JSON 格式必须查文档**
-   - 使用 search_component 查询组件的正确格式
-   - 网易版和国际版的 format_version 和组件名称不同
-   - 网易版物品使用 "1.10"，方块使用 "1.10.0"
-   - ModSDK 3.8 的 manifest.json 必须使用 format_version: 2，避免新生物蛋贴图异常
-
-5. **参考示例项目**
-   - input/ 目录下有示例项目，可参考实际用法
-
-【强制遵循的代码规范】
-
-生成代码时必须遵循以下核心规则（完整规范可通过 get_best_practices 工具获取）：
-- Python 2.7 兼容：禁止 f-string、type hints、async/await、print()函数
-- 客户端/服务端严格分离，跨端只用事件通信
-- GetEngineCompFactory 必须文件顶部缓存
-- Tick 逻辑必须降帧（质数间隔）
-- 点对点通信优先于广播
-
-【UI 界面开发规范】
-
-- _ui_defs.json 必须用对象格式 {"ui_defs": [...]}，不能是纯数组
-- RegisterUI 必须在 UiInitFinished 事件回调中调用
-- 控件操作需类型转换：asButton()、asLabel() 等
-- 关闭 UI 用 self.SetRemove()，不要用 PopScreen
-
-请在生成代码时自动应用这些规范，无需用户额外提醒。
-
-【代码审查能力】
-
-当用户请求代码审查时，检查以下问题：
-- 🔴 严重：客户端/服务端混用、GetEngineCompFactory 未缓存、函数内 import、Tick 无降帧、事件参数名错误
-- 🟠 警告：BroadcastToAllClient 滥用、ServerBlockEntityTickEvent 无加盐、组件重复创建、未查文档使用 API
-- 🟡 建议：魔法数字、缺少错误处理、命名不规范
-
-输出格式：问题严重程度 + 位置 + 问题代码 + 修复建议"""
+运行时只使用仓库内快照。3.9 官方文档已经同步，但尚无可读的 ModSDK 3.9 Python 运行时源码复核；不得猜测 API 签名或把工程经验表述为官方硬规则。"""
 )
 
 # Bedrock Wiki 路径（相对于项目根目录）
 _PROJECT_ROOT = Path(__file__).parent.parent
 BEDROCK_WIKI_PATH = Path(os.environ.get("MODSDK_BEDROCK_WIKI_PATH", str(_PROJECT_ROOT / "bedrock-wiki-wiki")))
 # Bedrock Wiki 最大支持版本（网易版兼容上限）
-BEDROCK_WIKI_MAX_VERSION = "1.21.90"
+BEDROCK_WIKI_MAX_VERSION = "1.21.120"
 
 
 # ============================================================================
@@ -136,14 +85,14 @@ BEDROCK_WIKI_MAX_VERSION = "1.21.90"
 class BedrockWikiReader:
     """读取 bedrock-wiki-wiki/docs/ 下的 Markdown 文档，过滤版本 > MAX_VERSION 的内容"""
     
-    def __init__(self, wiki_path, max_version="1.21.90"):
+    def __init__(self, wiki_path, max_version="1.21.120"):
         self.wiki_path = Path(wiki_path) / "docs"
         self.max_version = max_version
         self._topics = {}  # topic_key -> {name, files: [{path, content}]}
         self._load_topics()
     
     def _parse_version(self, version_str):
-        """解析版本号字符串为可比较的元组，如 '1.21.90' -> (1, 21, 90)"""
+        """解析版本号字符串为可比较的元组，如 '1.21.120' -> (1, 21, 120)"""
         try:
             return tuple(int(x) for x in version_str.strip().split('.'))
         except (ValueError, AttributeError):
@@ -264,6 +213,37 @@ def get_bedrock_wiki_reader():
 async def list_resources() -> List[Resource]:
     """列出所有可用的 Resources"""
     resources = []
+
+    from .standards import get_registry
+
+    registry = get_registry()
+    resources.extend([
+        Resource(
+            uri="modsdk-guidance://versions",
+            name="ModSDK 规范版本",
+            description="当前支持的 ModSDK/BE 版本、别名与运行时证据状态",
+            mimeType="application/json",
+        ),
+        Resource(
+            uri="modsdk-guidance://index",
+            name="ModSDK 开发规则索引",
+            description="经校验的版本化规则摘要，不暴露旧 standard/Skills 全文",
+            mimeType="application/json",
+        ),
+        Resource(
+            uri="modsdk-guidance://sources",
+            name="ModSDK 规范来源",
+            description="规则来源、authority 与快照元数据",
+            mimeType="application/json",
+        ),
+    ])
+    for rule in registry.rules:
+        resources.append(Resource(
+            uri="modsdk-guidance://rules/{}".format(rule["id"]),
+            name="ModSDK 规则: {}".format(rule["id"]),
+            description=rule["title"],
+            mimeType="application/json",
+        ))
     
     # Bedrock Wiki 资源
     wiki_reader = get_bedrock_wiki_reader()
@@ -277,19 +257,21 @@ async def list_resources() -> List[Resource]:
             )
         )
 
+    docs_reader = get_docs_reader()
+    categories = docs_reader.get_api_categories()
+    api_total = docs_reader.get_api_entry_count()
+
     # API/事件紧凑索引 Resource — 让 LLM 直接看到所有 API，用自身语义能力匹配
     resources.append(
         Resource(
             uri="api-index://full",
             name="ModSDK API/事件完整索引",
-            description="1879个API/事件的紧凑索引（按分类组织）。LLM可直接阅读此索引找到正确的API名称，然后用get_api_detail获取完整签名。比search_api更精准。",
+            description=f"{api_total}个API/事件的紧凑索引（按分类组织）。LLM可直接阅读此索引找到正确的API名称，然后用get_api_detail获取完整签名。比search_api更精准。",
             mimeType="text/plain"
         )
     )
 
     # 按顶级分类拆分的子索引
-    docs_reader = get_docs_reader()
-    categories = docs_reader.get_api_categories()
     for top_cat in sorted(categories.keys()):
         total = sum(categories[top_cat].values())
         if total > 0:
@@ -306,22 +288,22 @@ async def list_resources() -> List[Resource]:
     GUIDE_RESOURCES = [
         ("guide://json-ui", "JSON UI 完整说明文档",
          "网易官方JSON UI教程（2741行），含控件类型、属性、数据绑定、动画、_ui_defs等完整参考",
-         "mcguide/18-界面与交互/30-UI说明文档.md"),
+         "21-界面与交互/30-UI说明文档.md"),
         ("guide://custom-dimension", "自定义维度教程合集",
          "网易官方自定义维度教程（7篇），含维度配置、群系地貌、生物生成、自定义特征、传送门等",
-         "mcguide/20-玩法开发/15-自定义游戏内容/4-自定义维度"),
+         "15-自定义游戏内容/4-自定义维度"),
         ("guide://custom-block", "自定义方块教程合集",
          "网易官方自定义方块教程，含JSON组件（675行）、方块功能、特殊方块等",
-         "mcguide/20-玩法开发/15-自定义游戏内容/2-自定义方块"),
+         "15-自定义游戏内容/2-自定义方块"),
         ("guide://custom-entity", "自定义实体教程合集",
          "网易官方自定义实体教程，含实体组件、AI行为、动画、渲染等",
-         "mcguide/20-玩法开发/15-自定义游戏内容/1-自定义实体"),
+         "15-自定义游戏内容/3-自定义生物"),
         ("guide://custom-item", "自定义物品教程合集",
          "网易官方自定义物品教程，含物品组件、物品事件等",
-         "mcguide/20-玩法开发/15-自定义游戏内容/3-自定义物品"),
-        ("guide://particle-effect", "粒子特效教程合集",
-         "网易官方特效教程（8篇），含原版粒子、中国版粒子/序列帧配置文件解析等",
-         "mcguide/16-美术/9-特效"),
+         "15-自定义游戏内容/1-自定义物品"),
+        ("guide://particle-effect", "方块粒子特效与实体外观教程",
+         "网易官方自定义方块实体外观教程，含网易版粒子特效、序列帧特效、原版粒子特效及控制接口",
+         "15-自定义游戏内容/2-自定义方块/4.1-自定义方块实体外观.md"),
     ]
 
     for uri_str, name, desc, _ in GUIDE_RESOURCES:
@@ -334,12 +316,12 @@ async def list_resources() -> List[Resource]:
 
 # 教程 Resource 路径映射（用于 read_resource）
 _GUIDE_RESOURCE_PATHS = {
-    "json-ui": "mcguide/18-界面与交互/30-UI说明文档.md",
-    "custom-dimension": "mcguide/20-玩法开发/15-自定义游戏内容/4-自定义维度",
-    "custom-block": "mcguide/20-玩法开发/15-自定义游戏内容/2-自定义方块",
-    "custom-entity": "mcguide/20-玩法开发/15-自定义游戏内容/1-自定义实体",
-    "custom-item": "mcguide/20-玩法开发/15-自定义游戏内容/3-自定义物品",
-    "particle-effect": "mcguide/16-美术/9-特效",
+    "json-ui": "21-界面与交互/30-UI说明文档.md",
+    "custom-dimension": "15-自定义游戏内容/4-自定义维度",
+    "custom-block": "15-自定义游戏内容/2-自定义方块",
+    "custom-entity": "15-自定义游戏内容/3-自定义生物",
+    "custom-item": "15-自定义游戏内容/1-自定义物品",
+    "particle-effect": "15-自定义游戏内容/2-自定义方块/4.1-自定义方块实体外观.md",
 }
 
 
@@ -349,6 +331,43 @@ async def read_resource(uri) -> str:
     uri = str(uri)  # AnyUrl -> str
 
     # 解析 URI
+    if uri.startswith("modsdk-guidance://"):
+        from .standards import get_registry
+
+        registry = get_registry()
+        key = uri[len("modsdk-guidance://"):]
+        if key == "versions":
+            payload = {
+                "schema_version": registry.manifest["schema_version"],
+                "default_version": registry.manifest["default_version"],
+                "versions": list(registry.versions),
+            }
+        elif key == "index":
+            payload = {
+                "schema_version": registry.manifest["schema_version"],
+                "rules": [
+                    {
+                        field: rule[field]
+                        for field in ("id", "title", "domain", "sides", "artifact_types", "versions", "severity", "enforcement", "authority")
+                    }
+                    for rule in registry.rules
+                ],
+            }
+        elif key == "sources":
+            payload = {
+                "schema_version": registry.manifest["schema_version"],
+                "sources": list(registry.sources),
+            }
+        elif key.startswith("rules/"):
+            rule_id = key[len("rules/"):]
+            try:
+                payload = registry.get_rule(rule_id)
+            except KeyError:
+                return json.dumps({"error": "未知规则 ID", "rule_id": rule_id}, ensure_ascii=False, sort_keys=True)
+        else:
+            return json.dumps({"error": "未知 guidance Resource", "uri": uri}, ensure_ascii=False, sort_keys=True)
+        return json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=2)
+
     if uri.startswith("bedrock-wiki://"):
         topic_key = uri[15:]  # 移除 "bedrock-wiki://" 前缀
         wiki_reader = get_bedrock_wiki_reader()
@@ -601,6 +620,42 @@ async def list_tools() -> List[Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {}
+            }
+        ),
+
+        Tool(
+            name="get_development_guidance",
+            description="按目标、领域、端侧和 ModSDK 版本返回最相关的版本化开发规则与证据边界。",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "goal": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "当前开发目标，不能为空"
+                    },
+                    "domain": {
+                        "type": "string",
+                        "enum": ["auto", "python", "architecture", "api_event", "json_content", "json_ui", "performance", "multiplayer"],
+                        "default": "auto"
+                    },
+                    "side": {
+                        "type": "string",
+                        "enum": ["auto", "client", "server", "common", "cross_side"],
+                        "default": "auto"
+                    },
+                    "target_version": {
+                        "type": "string",
+                        "default": "current"
+                    },
+                    "max_rules": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 12,
+                        "default": 8
+                    }
+                },
+                "required": ["goal"]
             }
         ),
         
@@ -898,7 +953,7 @@ def _build_generate_tools() -> List[Tool]:
         ),
         Tool(
             name="generate_event_listener",
-            description="生成事件监听器代码。",
+            description="生成已查证的官方事件或显式声明的自定义事件监听器代码。官方同名多端事件必须选择端侧。",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -910,6 +965,21 @@ def _build_generate_tools() -> List[Tool]:
                         "type": "string",
                         "description": "事件描述",
                         "default": "事件处理"
+                    },
+                    "side": {
+                        "type": "string",
+                        "enum": ["auto", "client", "server"],
+                        "default": "auto",
+                        "description": "事件端侧；官方事件同名多端时必须显式选择"
+                    },
+                    "event_kind": {
+                        "type": "string",
+                        "enum": ["official", "custom"],
+                        "default": "official"
+                    },
+                    "params": {
+                        "type": "object",
+                        "description": "自定义事件的参数名到说明映射；官方事件参数由文档取得"
                     }
                 },
                 "required": ["event_name"]
@@ -1047,12 +1117,14 @@ def _build_generate_tools() -> List[Tool]:
 
 【适用于 NetEase 我的世界数据驱动方块】
 
-【重要】format_version 必须使用 "1.10.0"，这是网易版的强制要求！
+通过 format_profile 明确选择官方支持的组件结构；默认 legacy_1_10 保持旧调用兼容。
 
 生成内容：
 - 行为包方块 JSON: behavior_pack_<namespace>/netease_blocks/<namespace>_<block_id>.json
 
-方块组件支持（1.10.0 版本格式，使用旧版组件名）：
+方块格式档：legacy_1_10（对象组件）、scalar_1_16（标量组件）、modern_1_19_20（现代组件）。
+
+旧版组件示例：
 - minecraft:destroy_time - 挖掘时间 {"value": 2.0}
 - minecraft:explosion_resistance - 爆炸抗性 {"value": 10.0}
 - minecraft:block_light_emission - 发光等级 {"emission": 15}
@@ -1060,9 +1132,7 @@ def _build_generate_tools() -> List[Tool]:
 - minecraft:friction - 摩擦力
 - netease:solid - 是否为固体方块
 - netease:tier - 挖掘等级和工具类型
-等更多网易特有组件
-
-【注意】不要使用 1.19.20+ 的新版组件名（如 destructible_by_mining）""",
+等更多网易特有组件""",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -1097,6 +1167,12 @@ def _build_generate_tools() -> List[Tool]:
                     "components": {
                         "type": "object",
                         "description": "额外方块组件"
+                    },
+                    "format_profile": {
+                        "type": "string",
+                        "enum": ["legacy_1_10", "scalar_1_16", "modern_1_19_20"],
+                        "default": "legacy_1_10",
+                        "description": "方块 format_version 与组件形状档"
                     }
                 },
                 "required": ["namespace", "block_id"]
@@ -1169,7 +1245,7 @@ behavior_pack_<namespace>/netease_recipes/<recipe_id>.json""",
             description="""生成自定义实体 JSON 文件（行为包 + 资源包）。
 
 【适用于自定义生物/实体】
-遵循 NetEase ModSDK 3.8 官方文档规范
+遵循 NetEase ModSDK 3.9 / BE 1.21.120 官方文档快照
 
 生成内容：
 - 行为包实体 JSON: behavior_pack_<namespace>/entities/<namespace>_<entity_id>.json
@@ -1541,6 +1617,67 @@ def _format_item_result(result: Dict[str, str], namespace: str, item_id: str, di
     return output
 
 
+def _render_validation_report(report: ValidationReport) -> str:
+    """生成稳定、紧凑且不包含违规产物正文的校验报告。"""
+    payload = {
+        "schema_version": "1.0",
+        "status": "blocked" if report.blocked else ("warning" if report.has_warnings else "ok"),
+    }
+    payload.update(report.to_dict())
+    return json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
+def _validated_generated_response(output: str, artifacts: List[Artifact]) -> List[TextContent]:
+    """保持旧产物为第一段；warning 追加报告，critical 只返回报告。"""
+    from .standards import get_python_module_whitelist
+
+    report = validate_artifacts(artifacts, whitelist=get_python_module_whitelist())
+    report_content = TextContent(type="text", text=_render_validation_report(report))
+    if report.blocked:
+        return [report_content]
+
+    contents = [TextContent(type="text", text=output)]
+    if report.has_warnings:
+        contents.append(report_content)
+    return contents
+
+
+def _blocked_report(code: str, message: str, details: Optional[Dict[str, Any]] = None) -> List[TextContent]:
+    """返回不携带候选产物的稳定阻断报告。"""
+    issue = {
+        "code": code,
+        "severity": "critical",
+        "message": message,
+        "filename": "request",
+        "line": 1,
+        "column": 1,
+        "detector": "request.contract",
+    }
+    if details:
+        issue["details"] = details
+    payload = {
+        "schema_version": "1.0",
+        "status": "blocked",
+        "blocked": True,
+        "has_warnings": False,
+        "artifact_count": 0,
+        "issue_count": 1,
+        "artifacts": [],
+        "issues": [issue],
+    }
+    return [TextContent(type="text", text=json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")))]
+
+
+def _entry_side(entry: Dict[str, Any]) -> str:
+    """将结构化文档中的中英文端侧统一为工具契约值。"""
+    value = str(entry.get("side", "")).strip().lower()
+    if value in {"server", "服务端"}:
+        return "server"
+    if value in {"client", "客户端"}:
+        return "client"
+    return value
+
+
 @server.call_tool()
 async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
     """处理工具调用"""
@@ -1691,7 +1828,7 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
                 for p in r['params']:
                     pname = p['param_name']
                     ptype = p.get('param_type', '')
-                    pdesc = p.get('param_desc', '')
+                    pdesc = p.get('param_comment', '')
                     params_parts.append(f"`{pname}`({ptype}) {pdesc}")
                     # 自动检测枚举引用并内联（覆盖全部 73 个枚举）
                     inline = _try_inline_enum(docs_reader, pdesc)
@@ -1775,12 +1912,36 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
         reload_docs()
         docs = docs_reader.list_documents()
         return [TextContent(type="text", text=f"文档已重新加载。当前共有 {len(docs)} 个文档。")]
+
+    elif name == "get_development_guidance":
+        from .guidance import render_guidance_json
+
+        goal = str(arguments.get("goal", "")).strip()
+        if not goal:
+            return _blocked_report("GUIDANCE_GOAL_REQUIRED", "goal 必填且不能为空")
+
+        domain = arguments.get("domain", "auto")
+        side = arguments.get("side", "auto")
+        target_version = arguments.get("target_version", "current")
+        max_rules = arguments.get("max_rules", 8)
+        try:
+            guidance = render_guidance_json(
+                request=goal,
+                version=target_version,
+                domains=None if domain == "auto" else [domain],
+                sides=None if side == "auto" else [side],
+                limit=max_rules,
+            )
+        except (TypeError, ValueError) as exc:
+            return _blocked_report("GUIDANCE_REQUEST_INVALID", str(exc))
+        return [TextContent(type="text", text=guidance)]
     
     # 代码生成工具
     elif name == "generate_mod_project":
+        mod_id = arguments.get("mod_id")
         files = generate_mod_project(
             mod_name=arguments.get("mod_name"),
-            mod_id=arguments.get("mod_id"),
+            mod_id=mod_id,
             author=arguments.get("author", "Author"),
             description=arguments.get("description", "A Minecraft mod"),
             version=arguments.get("version", "1.0.0")
@@ -1789,35 +1950,113 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
         output = "## 生成的 Mod 项目文件\n\n"
         for filename, content in files.items():
             output += f"### `{filename}`\n\n```python\n{content}\n```\n\n"
-        
-        return [TextContent(type="text", text=output)]
+
+        project_root = "{}_Script".format(mod_id)
+        artifacts = []
+        for filename, content in files.items():
+            if filename.endswith("/server.py"):
+                side = "server"
+            elif filename.endswith("/client.py"):
+                side = "client"
+            elif filename.endswith("/modMain.py"):
+                side = "cross_side"
+            else:
+                side = "common"
+            artifacts.append(Artifact(
+                content=content,
+                filename=filename,
+                artifact_type="python",
+                side=side,
+                target_version="3.9",
+                project_modules=(project_root, mod_id),
+            ))
+        return _validated_generated_response(output, artifacts)
     
     elif name == "generate_server_system":
         code = generate_server_system(
             mod_name=arguments.get("mod_name"),
             class_name=arguments.get("class_name")
         )
-        return [TextContent(type="text", text=f"## 服务端系统代码\n\n```python\n{code}\n```")]
+        output = f"## 服务端系统代码\n\n```python\n{code}\n```"
+        return _validated_generated_response(output, [Artifact(code, "server.py", "python", "server", "3.9")])
     
     elif name == "generate_client_system":
         code = generate_client_system(
             mod_name=arguments.get("mod_name"),
             class_name=arguments.get("class_name")
         )
-        return [TextContent(type="text", text=f"## 客户端系统代码\n\n```python\n{code}\n```")]
+        output = f"## 客户端系统代码\n\n```python\n{code}\n```"
+        return _validated_generated_response(output, [Artifact(code, "client.py", "python", "client", "3.9")])
     
     elif name == "generate_event_listener":
+        event_name = arguments.get("event_name")
+        event_kind = arguments.get("event_kind", "official")
+        requested_side = arguments.get("side", "auto")
+        event_description = arguments.get("event_description", "事件处理")
+
+        if event_kind not in {"official", "custom"}:
+            return _blocked_report("EVENT_KIND_INVALID", "event_kind 只能是 official 或 custom")
+        if requested_side not in {"auto", "client", "server"}:
+            return _blocked_report("EVENT_SIDE_INVALID", "side 只能是 auto、client 或 server")
+
+        if event_kind == "custom":
+            params = arguments.get("params")
+            if not isinstance(params, dict) or not params or any(not str(value).strip() for value in params.values()):
+                return _blocked_report(
+                    "CUSTOM_EVENT_PARAMS_REQUIRED",
+                    "自定义事件必须提供非空 params 参数说明",
+                    {"event_name": event_name},
+                )
+            if requested_side == "auto":
+                return _blocked_report("CUSTOM_EVENT_SIDE_REQUIRED", "自定义事件必须显式选择 client 或 server")
+            selected_side = requested_side
+        else:
+            detail = docs_reader.get_api_detail(event_name)
+            entries = detail if isinstance(detail, list) else ([detail] if detail else [])
+            entries = [entry for entry in entries if entry.get("type") == "event"]
+            if requested_side != "auto":
+                entries = [entry for entry in entries if _entry_side(entry) == requested_side]
+            if not entries:
+                return _blocked_report(
+                    "OFFICIAL_EVENT_NOT_FOUND",
+                    "结构化官方文档中未找到匹配的事件与端侧，已拒绝猜测参数",
+                    {"event_name": event_name, "side": requested_side},
+                )
+            sides = sorted({_entry_side(entry) for entry in entries})
+            if requested_side == "auto" and len(sides) != 1:
+                return _blocked_report(
+                    "OFFICIAL_EVENT_SIDE_AMBIGUOUS",
+                    "该官方事件存在多个端侧版本，必须显式选择 side",
+                    {"event_name": event_name, "available_sides": sides},
+                )
+            entry = entries[0]
+            selected_side = _entry_side(entry)
+            params = {
+                param.get("param_name", ""): "{}{}".format(
+                    param.get("param_type", ""),
+                    " - " + param.get("param_comment", "") if param.get("param_comment") else "",
+                )
+                for param in entry.get("params", [])
+                if param.get("param_name")
+            }
+            if event_description == "事件处理":
+                event_description = entry.get("desc") or event_description
+
         code = generate_event_listener(
-            event_name=arguments.get("event_name"),
-            event_description=arguments.get("event_description", "事件处理")
+            event_name=event_name,
+            event_description=event_description,
+            params=params,
+            side=selected_side,
         )
-        return [TextContent(type="text", text=f"## 事件监听器代码\n\n```python\n{code}\n```")]
+        output = f"## 事件监听器代码\n\n```python\n{code}\n```"
+        return _validated_generated_response(output, [Artifact(code, "event_listener.py", "python", selected_side, "3.9")])
     
     elif name == "generate_custom_command":
         code = generate_custom_command(
             command_name=arguments.get("command_name")
         )
-        return [TextContent(type="text", text=f"## 自定义命令代码\n\n```python\n{code}\n```")]
+        output = f"## 自定义命令代码\n\n```python\n{code}\n```"
+        return _validated_generated_response(output, [Artifact(code, "custom_command.py", "python", "server", "3.9")])
     
     elif name == "generate_custom_item":
         code = generate_custom_item(
@@ -1826,7 +2065,8 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
             display_name=arguments.get("display_name", "自定义物品"),
             max_stack=arguments.get("max_stack", 64)
         )
-        return [TextContent(type="text", text=f"## 自定义物品代码\n\n```python\n{code}\n```")]
+        output = f"## 自定义物品代码\n\n```python\n{code}\n```"
+        return _validated_generated_response(output, [Artifact(code, "custom_item.py", "python", "server", "3.9")])
     
     elif name == "generate_custom_block":
         code = generate_custom_block(
@@ -1835,7 +2075,8 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
             destroy_time=arguments.get("destroy_time", 1.0),
             explosion_resistance=arguments.get("explosion_resistance", 1.0)
         )
-        return [TextContent(type="text", text=f"## 自定义方块代码\n\n```python\n{code}\n```")]
+        output = f"## 自定义方块代码\n\n```python\n{code}\n```"
+        return _validated_generated_response(output, [Artifact(code, "custom_block.py", "python", "server", "3.9")])
     
     # ============================================================
     # Bedrock JSON 生成工具处理
@@ -1863,12 +2104,17 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
         output += f"### 资源包文件: `resource_pack_{pack_id}/netease_items_res/{namespace}_{item_id}.json`\n\n"
         output += f"```json\n{result['resource']}\n```\n\n"
         output += f"### 本地化条目 (texts/zh_CN.lang)\n\n```\nitem.{namespace}:{item_id}.name=物品显示名称\n```"
-        
-        return [TextContent(type="text", text=output)]
+
+        artifacts = [
+            Artifact(result["behavior"], "{}_{}.json".format(namespace, item_id), "item", "common", "3.9"),
+            Artifact(result["resource"], "{}_{}.resource.json".format(namespace, item_id), "item", "client", "3.9"),
+        ]
+        return _validated_generated_response(output, artifacts)
     
     elif name == "generate_block_json":
         namespace = arguments.get("namespace")
         block_id = arguments.get("block_id")
+        format_profile = arguments.get("format_profile", "legacy_1_10")
         
         result = generate_block_json(
             namespace=namespace,
@@ -1877,7 +2123,8 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
             explosion_resistance=arguments.get("explosion_resistance", 10.0),
             light_emission=arguments.get("light_emission", 0),
             map_color=arguments.get("map_color", "#FFFFFF"),
-            components=arguments.get("components")
+            components=arguments.get("components"),
+            format_profile=format_profile,
         )
         
         pack_id = namespace
@@ -1886,7 +2133,15 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
         output += f"```json\n{result}\n```\n\n"
         output += f"### 本地化条目 (texts/zh_CN.lang)\n\n```\ntile.{namespace}:{block_id}.name=方块显示名称\n```"
         
-        return [TextContent(type="text", text=output)]
+        artifact = Artifact(
+            result,
+            "{}_{}.json".format(namespace, block_id),
+            "block",
+            "common",
+            "3.9",
+            format_profile,
+        )
+        return _validated_generated_response(output, [artifact])
     
     elif name == "generate_recipe_json":
         recipe_type = arguments.get("recipe_type")
@@ -1928,7 +2183,10 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
         output += f"### 文件: `behavior_pack_{pack_id}/netease_recipes/{recipe_id}.json`\n\n"
         output += f"```json\n{result}\n```"
         
-        return [TextContent(type="text", text=output)]
+        return _validated_generated_response(
+            output,
+            [Artifact(result, "{}.json".format(recipe_id), "json", "common", "3.9")],
+        )
     
     elif name == "generate_entity_json":
         namespace = arguments.get("namespace")
@@ -1955,7 +2213,11 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
         output += f"```json\n{result['resource']}\n```\n\n"
         output += f"### 本地化条目 (texts/zh_CN.lang)\n\n```\nentity.{namespace}:{entity_id}.name=实体显示名称\n```"
         
-        return [TextContent(type="text", text=output)]
+        artifacts = [
+            Artifact(result["behavior"], "{}_{}.entity.json".format(namespace, entity_id), "json", "common", "3.9"),
+            Artifact(result["resource"], "{}_{}.client_entity.json".format(namespace, entity_id), "json", "client", "3.9"),
+        ]
+        return _validated_generated_response(output, artifacts)
     
     elif name == "generate_loot_table_json":
         pools = arguments.get("pools", [])
@@ -1966,7 +2228,10 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
         output += "### 文件: `behavior_pack_<ID>/loot_tables/xxx.json`\n\n"
         output += f"```json\n{result}\n```"
         
-        return [TextContent(type="text", text=output)]
+        return _validated_generated_response(
+            output,
+            [Artifact(result, "loot_table.json", "json", "common", "3.9")],
+        )
     
     elif name == "generate_spawn_rules_json":
         namespace = arguments.get("namespace")
@@ -1986,7 +2251,10 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
         output += f"### 文件: `behavior_pack_{pack_id}/spawn_rules/{namespace}_{entity_id}.json`\n\n"
         output += f"```json\n{result}\n```"
         
-        return [TextContent(type="text", text=output)]
+        return _validated_generated_response(
+            output,
+            [Artifact(result, "{}_{}.spawn_rules.json".format(namespace, entity_id), "json", "server", "3.9")],
+        )
     
     # ============================================================
     # 高级物品生成工具处理（统一处理 9 种物品类型）
@@ -2004,14 +2272,46 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
             display_label = f"🛡️ 自定义{slot_name}"
             default_lang_name = f"自定义{slot_name}"
         output = _format_item_result(result, namespace, item_id, display_label, default_lang_name)
-        return [TextContent(type="text", text=output)]
+        artifacts = [
+            Artifact(result["behavior"], "{}_{}.json".format(namespace, item_id), "item", "common", "3.9"),
+            Artifact(result["resource"], "{}_{}.resource.json".format(namespace, item_id), "item", "client", "3.9"),
+        ]
+        return _validated_generated_response(output, artifacts)
     
     # 代码审查工具
     elif name == "review_code":
+        from .standards import get_python_module_whitelist, get_version_profile
+
         code = arguments.get("code", "")
         filename = arguments.get("filename", "unknown.py")
-        review_result = _perform_code_review(code, filename)
-        return [TextContent(type="text", text=review_result)]
+        artifact_type = arguments.get("artifact_type", "auto")
+        side = arguments.get("side", "auto")
+        target_version = arguments.get("target_version", "current")
+        project_modules = arguments.get("project_modules", [])
+        if artifact_type not in {"auto", "python", "json", "json_ui"}:
+            return _blocked_report("ARTIFACT_TYPE_INVALID", "artifact_type 不受支持：{}".format(artifact_type))
+        if side not in {"auto", "client", "server", "common", "cross_side"}:
+            return _blocked_report("SIDE_INVALID", "side 不受支持：{}".format(side))
+        try:
+            target_profile = get_version_profile(str(target_version))
+        except KeyError:
+            return _blocked_report(
+                "TARGET_VERSION_UNSUPPORTED",
+                "不支持的目标版本：{}".format(target_version),
+            )
+        if not isinstance(project_modules, list) or any(not isinstance(module, str) for module in project_modules):
+            return _blocked_report("PROJECT_MODULES_INVALID", "project_modules 必须是字符串数组")
+
+        artifact = Artifact(
+            content=code,
+            filename=filename,
+            artifact_type=artifact_type,
+            side=side,
+            target_version=target_profile["version"],
+            project_modules=tuple(project_modules),
+        )
+        report = validate_artifacts([artifact], whitelist=get_python_module_whitelist())
+        return [TextContent(type="text", text=_render_validation_report(report))]
     
     # ============================================================
     # 分类浏览工具（搜索兜底）
@@ -2144,6 +2444,14 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
         
         for cat_id, cat_data in practices.items():
             output += f"### {cat_data.get('name', cat_id)}\n\n"
+            if cat_data.get("projection") == "standard_registry":
+                output += "- 规范来源：`standard/registry`（目标版本 {}）\n".format(
+                    cat_data.get("target_version", "3.9")
+                )
+            elif cat_data.get("projection") == "legacy_3.8_compatibility":
+                output += "- 兼容边界：仅保留 3.8 历史迁移入口；当前默认目标仍为 3.9。\n"
+            if cat_data.get("source_boundary"):
+                output += "- 证据边界：{}\n".format(cat_data["source_boundary"])
             for rule in cat_data.get('rules', []):
                 output += f"- {rule}\n"
             output += "\n"
@@ -2153,329 +2461,29 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[TextContent]:
     elif name == "get_architecture_pattern":
         pattern_name = arguments.get("pattern_name", "")
         result = get_architecture_pattern(pattern_name)
-        return [TextContent(type="text", text=result)]
+        pattern_files = get_architecture_pattern_artifacts(pattern_name) if pattern_name else {}
+        if not pattern_files:
+            return [TextContent(type="text", text=result)]
+        artifacts = [
+            Artifact(code, filename, "python", "auto", "3.9")
+            for filename, code in pattern_files.items()
+        ]
+        return _validated_generated_response(result, artifacts)
 
     else:
         return [TextContent(type="text", text=f"未知的工具: {name}")]
 
 
 def _perform_code_review(code: str, filename: str) -> str:
-    """执行代码审查，返回审查报告"""
-    import re
-    
-    issues = {
-        "critical": [],
-        "warning": [],
-        "suggestion": []
-    }
-    
-    lines = code.split('\n')
-    
-    # 判断是否是 ServerSystem 文件（更精确的检测）
-    # 只通过类继承或主要 import 来判断
-    is_server_system = 'ServerSystem' in code or 'import mod.server.' in code
-    is_client_system = 'ClientSystem' in code or 'import mod.client.' in code
-    
-    # 如果同时检测到两种系统，优先根据类定义判断
-    if is_server_system and is_client_system:
-        # 检查实际的类定义
-        if 'class ' in code and 'ServerSystem' in code and 'ClientSystem' not in code:
-            is_client_system = False
-        elif 'class ' in code and 'ClientSystem' in code and 'ServerSystem' not in code:
-            is_server_system = False
-    
-    # 检查是否有 from __future__ import print_function
-    has_print_function_import = 'from __future__ import print_function' in code
-    
-    for i, line in enumerate(lines, 1):
-        line_stripped = line.strip()
-        
-        # 跳过注释行
-        if line_stripped.startswith('#'):
-            continue
-        
-        # 🔴 严重问题检查
-        
-        # ========================================
-        # Python 2.7 兼容性检查（最重要）
-        # ========================================
-        
-        # 1. f-string 检测 (Python 3.6+)
-        if re.search(r'\bf["\']', line):
-            issues["critical"].append({
-                "line": i,
-                "issue": "使用 f-string（Python 3.6+ 语法，ModSDK 不支持）",
-                "code": line_stripped,
-                "fix": '使用 "{}".format() 或 % 格式化。例如: "Hello {}".format(name) 或 "Hello %s" % name'
-            })
-        
-        # 2. print() 函数检测（应使用 print 语句）
-        # 如果文件顶部有 from __future__ import print_function，则允许使用 print()
-        # 检测 print(...) 但不是 print = 或 def print 或 .print(
-        if not has_print_function_import:
-            if re.search(r'(?<![.\w])print\s*\(', line) and 'from __future__' not in line:
-                issues["critical"].append({
-                    "line": i,
-                    "issue": "使用 print() 函数（Python 3 语法）",
-                    "code": line_stripped,
-                    "fix": '使用 print 语句：print "message" 或在文件顶部添加 from __future__ import print_function'
-                })
-        
-        # 3. Type hints 检测 (Python 3.5+)
-        # 检测函数参数类型注解 def func(x: int)
-        if re.search(r'def \w+\([^)]*:\s*\w+', line):
-            issues["critical"].append({
-                "line": i,
-                "issue": "使用类型注解（Python 3.5+ 语法，ModSDK 不支持）",
-                "code": line_stripped,
-                "fix": "移除类型注解。例如: def func(x: int) -> str 改为 def func(x)"
-            })
-        
-        # 检测变量类型注解 x: int = 1
-        if re.search(r'^\s*\w+\s*:\s*\w+\s*=', line):
-            issues["critical"].append({
-                "line": i,
-                "issue": "使用变量类型注解（Python 3.6+ 语法）",
-                "code": line_stripped,
-                "fix": "移除类型注解。例如: x: int = 1 改为 x = 1"
-            })
-        
-        # 检测返回值类型注解 -> 
-        if re.search(r'def \w+\([^)]*\)\s*->', line):
-            issues["critical"].append({
-                "line": i,
-                "issue": "使用返回值类型注解（Python 3.5+ 语法）",
-                "code": line_stripped,
-                "fix": "移除返回值类型注解 -> Type"
-            })
-        
-        # 4. async/await 检测 (Python 3.5+)
-        if re.search(r'\basync\s+def\b', line):
-            issues["critical"].append({
-                "line": i,
-                "issue": "使用 async def（Python 3.5+ 语法，ModSDK 不支持）",
-                "code": line_stripped,
-                "fix": "ModSDK 不支持异步编程，请使用同步代码"
-            })
-        
-        if re.search(r'\bawait\s+', line):
-            issues["critical"].append({
-                "line": i,
-                "issue": "使用 await（Python 3.5+ 语法，ModSDK 不支持）",
-                "code": line_stripped,
-                "fix": "ModSDK 不支持异步编程，请使用同步代码"
-            })
-        
-        # 5. 字典/集合推导式中的 walrus 运算符 := (Python 3.8+)
-        if ':=' in line:
-            issues["critical"].append({
-                "line": i,
-                "issue": "使用海象运算符 :=（Python 3.8+ 语法）",
-                "code": line_stripped,
-                "fix": "将赋值和条件分开写"
-            })
-        
-        # ========================================
-        # 架构规范检查
-        # ========================================
-        
-        # 6. 客户端/服务端混用
-        # ServerSystem 中不能导入 clientApi
-        if is_server_system and 'clientApi' in line and 'import' in line and not line_stripped.startswith('#'):
-            issues["critical"].append({
-                "line": i,
-                "issue": "ServerSystem 中导入 clientApi",
-                "code": line_stripped,
-                "fix": "使用 NotifyToClient() 事件通信代替直接调用客户端 API"
-            })
-        
-        # ClientSystem 中不能导入 serverApi
-        if is_client_system and 'serverApi' in line and 'import' in line and not line_stripped.startswith('#'):
-            issues["critical"].append({
-                "line": i,
-                "issue": "ClientSystem 中导入 serverApi",
-                "code": line_stripped,
-                "fix": "使用 NotifyToServer() 事件通信代替直接调用服务端 API"
-            })
-        
-        # 2. GetEngineCompFactory 未缓存（在 def 内调用）
-        # 排除注释行
-        if 'GetEngineCompFactory()' in line and not line_stripped.startswith('#'):
-            # 检查是否在函数内部（有缩进）
-            indent = len(line) - len(line.lstrip())
-            if indent >= 4:  # 缩进说明在函数内
-                issues["critical"].append({
-                    "line": i,
-                    "issue": "GetEngineCompFactory 在函数内调用（未缓存）",
-                    "code": line_stripped,
-                    "fix": "在文件顶部添加 CF = serverApi.GetEngineCompFactory()，然后使用 CF.CreateXxx()"
-                })
-        
-        # 3. 函数内 import
-        if line_stripped.startswith('import ') or line_stripped.startswith('from '):
-            indent = len(line) - len(line.lstrip())
-            if indent >= 4:  # 缩进说明在函数内
-                issues["critical"].append({
-                    "line": i,
-                    "issue": "函数内 import",
-                    "code": line_stripped,
-                    "fix": "将 import 语句移到文件顶部"
-                })
-        
-        # 4. Tick 事件无降帧检查（需要上下文分析）
-        if 'def OnTickServer' in line or 'def OnTickClient' in line:
-            # 检查后续行是否有 tick % 
-            has_frame_skip = False
-            for j in range(i, min(i + 20, len(lines))):
-                if 'tick %' in lines[j] or 'tick%' in lines[j]:
-                    has_frame_skip = True
-                    break
-                if j > i and lines[j].strip().startswith('def '):
-                    break
-            
-            if not has_frame_skip:
-                issues["warning"].append({
-                    "line": i,
-                    "issue": "Tick 事件可能缺少降帧逻辑",
-                    "code": line_stripped,
-                    "fix": "添加 if self.tick % 7 == 0: 来降低执行频率"
-                })
-        
-        # 🟠 警告问题检查
-        
-        # 5. BroadcastToAllClient 滥用
-        if 'BroadcastToAllClient' in line:
-            issues["warning"].append({
-                "line": i,
-                "issue": "使用 BroadcastToAllClient 广播",
-                "code": line_stripped,
-                "fix": "评估是否可以使用 NotifyToClient 进行点对点通信"
-            })
-        
-        # 6. ServerBlockEntityTickEvent 无加盐（检查处理函数）
-        if 'ServerBlockEntityTickEvent' in line or 'OnBlockEntityTick' in line.replace(' ', ''):
-            # 检查后续是否有 salt 计算
-            has_salt = False
-            for j in range(i, min(i + 15, len(lines))):
-                if 'salt' in lines[j].lower() or ('posX' in lines[j] and '%' in lines[j]):
-                    has_salt = True
-                    break
-                if j > i and lines[j].strip().startswith('def '):
-                    break
-            
-            if not has_salt:
-                issues["warning"].append({
-                    "line": i,
-                    "issue": "ServerBlockEntityTickEvent 可能缺少加盐处理",
-                    "code": line_stripped,
-                    "fix": "使用 salt = (x * 31 + y * 17 + z * 13) % N 错开执行时机"
-                })
-        
-        # 7. 循环内创建组件
-        if re.search(r'for .+ in .+:', line_stripped):
-            # 检查循环体内是否有 Create
-            for j in range(i, min(i + 10, len(lines))):
-                if j > i and 'Create' in lines[j] and 'CF.' in lines[j]:
-                    issues["warning"].append({
-                        "line": j + 1,
-                        "issue": "循环内创建组件",
-                        "code": lines[j].strip(),
-                        "fix": "考虑缓存组件或在循环外创建"
-                    })
-                    break
-                if j > i and not lines[j].startswith(' ' * 4):
-                    break
-        
-        # 8. 字符串拼接
-        if '+=' in line and ('str' in line.lower() or '"' in line or "'" in line):
-            if 'for ' in '\n'.join(lines[max(0, i-5):i]):  # 检查是否在循环内
-                issues["warning"].append({
-                    "line": i,
-                    "issue": "循环内字符串拼接",
-                    "code": line_stripped,
-                    "fix": "使用列表收集后 ''.join() 拼接"
-                })
-        
-        # 🟡 建议优化检查
-        
-        # 9. 魔法数字
-        magic_number_match = re.search(r'[=<>!]=?\s*(\d{2,})', line)
-        if magic_number_match and not any(kw in line for kw in ['line', 'range', 'len', 'tick', '%']):
-            number = magic_number_match.group(1)
-            issues["suggestion"].append({
-                "line": i,
-                "issue": f"魔法数字 {number}",
-                "code": line_stripped,
-                "fix": "考虑定义为常量"
-            })
-        
-        # 10. 缺少错误处理
-        if '[' in line and ']' in line and '=' in line:
-            if not any(kw in line for kw in ['.get(', 'if ', 'try', 'range']):
-                if re.search(r'\[[\'"]\w+[\'"]\]', line) or re.search(r'\[\w+\]', line):
-                    issues["suggestion"].append({
-                        "line": i,
-                        "issue": "直接字典/列表访问可能引发 KeyError",
-                        "code": line_stripped,
-                        "fix": "使用 .get() 方法或添加 try-except"
-                    })
-        
-        # 11. 事件命名
-        if 'NotifyToClient' in line or 'NotifyToServer' in line or 'BroadcastEvent' in line:
-            event_match = re.search(r'["\']([a-z][a-z0-9]*)["\']', line, re.I)
-            if event_match:
-                event_name = event_match.group(1)
-                if len(event_name) < 4 or event_name.lower() == event_name:
-                    issues["suggestion"].append({
-                        "line": i,
-                        "issue": f"事件名 '{event_name}' 可能不够描述性",
-                        "code": line_stripped,
-                        "fix": "使用 PascalCase 描述性命名，如 'PlayerInventoryUpdated'"
-                    })
-    
-    # 生成报告
-    output = f"# 代码审查报告: {filename}\n\n"
-    
-    total_critical = len(issues["critical"])
-    total_warning = len(issues["warning"])
-    total_suggestion = len(issues["suggestion"])
-    
-    output += "## 📊 统计\n\n"
-    output += f"- 🔴 严重问题：{total_critical} 个\n"
-    output += f"- 🟠 警告问题：{total_warning} 个\n"
-    output += f"- 🟡 优化建议：{total_suggestion} 个\n\n"
-    
-    if total_critical == 0 and total_warning == 0:
-        output += "✅ **整体评价**：代码质量良好，未发现严重问题！\n\n"
-    elif total_critical > 0:
-        output += "⚠️ **整体评价**：发现严重问题，建议立即修复！\n\n"
-    else:
-        output += "📝 **整体评价**：代码基本合格，建议优化警告项。\n\n"
-    
-    # 输出详细问题
-    if issues["critical"]:
-        output += "---\n\n## 🔴 严重问题（必须修复）\n\n"
-        for issue in issues["critical"]:
-            output += f"### 行 {issue['line']}: {issue['issue']}\n\n"
-            output += f"**问题代码**:\n```python\n{issue['code']}\n```\n\n"
-            output += f"**修复建议**: {issue['fix']}\n\n"
-    
-    if issues["warning"]:
-        output += "---\n\n## 🟠 警告问题（建议修复）\n\n"
-        for issue in issues["warning"]:
-            output += f"### 行 {issue['line']}: {issue['issue']}\n\n"
-            output += f"**问题代码**:\n```python\n{issue['code']}\n```\n\n"
-            output += f"**修复建议**: {issue['fix']}\n\n"
-    
-    if issues["suggestion"]:
-        output += "---\n\n## 🟡 优化建议（可选）\n\n"
-        for issue in issues["suggestion"]:
-            output += f"### 行 {issue['line']}: {issue['issue']}\n\n"
-            output += f"**代码**:\n```python\n{issue['code']}\n```\n\n"
-            output += f"**建议**: {issue['fix']}\n\n"
-    
-    return output
+    """兼容旧内部调用，实际委托给统一结构感知校验器。"""
+    from .standards import get_python_module_whitelist
 
+    artifact_type = "json" if filename.lower().endswith(".json") else "python"
+    report = validate_artifacts(
+        [Artifact(code, filename, artifact_type, "auto", "3.9")],
+        whitelist=get_python_module_whitelist(),
+    )
+    return _render_validation_report(report)
 
 # ============================================================================
 # 提示词定义
@@ -2542,34 +2550,11 @@ async def get_prompt(name: str, arguments: Optional[Dict[str, str]]) -> GetPromp
                     role="user",
                     content=TextContent(
                         type="text",
-                        text="""你现在是一位我的世界中国版（网易我的世界）ModSDK 开发专家。你精通：
-
-1. **Python ModSDK API**
-   - 服务端 API (mod.server.extraServerApi)
-   - 客户端 API (mod.client.extraClientApi)
-   - 组件系统 (GetEngineCompFactory)
-
-2. **事件系统**
-   - 服务端事件监听与处理
-   - 客户端事件监听与处理
-   - 自定义事件的创建与触发
-
-3. **游戏机制**
-   - 方块操作、实体操作、玩家系统
-   - 背包管理、物品系统
-   - 世界操作、命令系统
-
-4. **最佳实践**
-   - Mod 项目结构
-   - 代码组织与模块化
-   - 性能优化
-   - 调试技巧
-
-请根据用户的问题，提供专业、准确的技术指导。在回答时：
-- 使用 search_docs 工具查找相关文档
-- 使用代码生成工具提供示例代码
-- 解释代码的工作原理
-- 提供最佳实践建议"""
+                        text="""以 ModSDK 3.9 / BE 1.21.120 为目标处理开发请求：
+1. 调用 get_development_guidance 取得目标、端侧和产物规则。
+2. 涉及 API/事件时用 search_api → get_api_detail 查证；需要正文再用 search_docs/get_document_section。
+3. 生成代码或 JSON，并读取随附校验报告。
+4. 修复 critical；对 warning 说明证据边界与人工验证项。不得猜测签名。"""
                     )
                 )
             ]
@@ -2590,11 +2575,7 @@ async def get_prompt(name: str, arguments: Optional[Dict[str, str]]) -> GetPromp
 **Mod 名称**: {mod_name}
 **功能描述**: {mod_description}
 
-请：
-1. 使用 generate_mod_project 工具生成项目结构
-2. 根据功能需求，解释需要监听哪些事件
-3. 提供实现功能的具体代码
-4. 说明如何测试和部署这个 Mod"""
+按固定流程完成：get_development_guidance → search_api/get_api_detail 查证事件与接口 → generate_mod_project 及所需生成器 → 阅读校验报告并修复 critical。最后给出本地验证步骤。"""
                     )
                 )
             ]
@@ -2616,11 +2597,7 @@ async def get_prompt(name: str, arguments: Optional[Dict[str, str]]) -> GetPromp
 {error_message}
 ```
 
-请：
-1. 分析错误原因
-2. 搜索相关文档了解正确用法
-3. 提供修复方案
-4. 解释如何避免类似问题"""
+先调用 get_development_guidance；再用 search_api/get_api_detail 或 search_docs/get_document_section 查证相关行为；对显式代码调用 review_code；最后给出证据、修复和本地复现步骤。"""
                     )
                 )
             ]
@@ -2641,21 +2618,7 @@ async def get_prompt(name: str, arguments: Optional[Dict[str, str]]) -> GetPromp
 {code}
 ```
 
-请使用 review_code 工具进行自动检测，并提供：
-
-1. **审查报告**
-   - 🔴 严重问题（必须修复）
-   - 🟠 警告问题（建议修复）
-   - 🟡 优化建议（可选）
-
-2. **详细说明**
-   - 每个问题的具体位置和原因
-   - 不修复会带来的影响
-   - 具体的修复代码
-
-3. **整体评价**
-   - 代码质量评分
-   - 改进方向建议"""
+按 get_development_guidance → API/事件详情查证 → review_code 的流程审查。critical 给出可验证的修复；warning 明确上下文与证据等级，不把工程建议描述为官方硬规则。"""
                     )
                 )
             ]
@@ -2669,10 +2632,46 @@ async def get_prompt(name: str, arguments: Optional[Dict[str, str]]) -> GetPromp
 # 主函数
 # ============================================================================
 
+def _configure_diagnostics() -> None:
+    """让重定向的诊断流稳定使用 UTF-8，不触碰 MCP 协议 stdout。"""
+    reconfigure = getattr(sys.stderr, "reconfigure", None)
+    if callable(reconfigure):
+        reconfigure(encoding="utf-8", errors="backslashreplace")
+
+
+def _initialize_runtime():
+    """先校验核心注册表，再加载离线文档；任何损坏都会终止启动。"""
+    from .standards import get_registry
+
+    registry = get_registry()
+    docs_reader = get_docs_reader()
+    return registry, docs_reader
+
+
+def _health_payload() -> Dict[str, Any]:
+    """构造可验证版本、规则和快照状态的 SSE 健康信息。"""
+    from .standards import get_python_module_whitelist_snapshot, get_registry
+
+    registry = get_registry()
+    profile = registry.get_version_profile(registry.manifest["default_version"])
+    snapshot = get_python_module_whitelist_snapshot()
+    return {
+        "status": "ok",
+        "server": "netease-modsdk-mcp",
+        "modsdk_version": profile["version"],
+        "bedrock_version": profile["bedrock_version"],
+        "rule_count": len(registry.rules),
+        "detector_count": len(get_registered_detectors()),
+        "document_count": len(get_docs_reader().list_documents()),
+        "snapshot_time": snapshot["retrieved_at"],
+        "runtime_evidence_status": profile["runtime_evidence_status"],
+    }
+
+
 async def main_stdio():
     """使用 stdio 模式运行（本地部署）"""
-    # 初始化文档读取器
-    get_docs_reader()
+    _configure_diagnostics()
+    _initialize_runtime()
     
     # 启动 stdio 服务器
     async with stdio_server() as (read_stream, write_stream):
@@ -2690,8 +2689,8 @@ def create_sse_app():
     from starlette.routing import Mount, Route
     from starlette.responses import JSONResponse, Response
     
-    # 初始化文档读取器
-    get_docs_reader()
+    _configure_diagnostics()
+    _initialize_runtime()
     
     # 创建 SSE transport
     sse = SseServerTransport("/messages/")
@@ -2708,7 +2707,7 @@ def create_sse_app():
         return Response()
     
     async def health_check(request):
-        return JSONResponse({"status": "ok", "server": "netease-modsdk-mcp"})
+        return JSONResponse(_health_payload())
     
     return Starlette(
         debug=True,
@@ -2726,10 +2725,10 @@ async def main_sse(host: str = "0.0.0.0", port: int = 8000):
 
     app = create_sse_app()
     
-    print(f"MCP Server (SSE) 启动在 http://{host}:{port}")
-    print(f"   - SSE 端点: http://{host}:{port}/sse")
-    print(f"   - 消息端点: http://{host}:{port}/messages/")
-    print(f"   - 健康检查: http://{host}:{port}/health")
+    print(f"MCP Server (SSE) 启动在 http://{host}:{port}", file=sys.stderr)
+    print(f"- SSE 端点: http://{host}:{port}/sse", file=sys.stderr)
+    print(f"- 消息端点: http://{host}:{port}/messages/", file=sys.stderr)
+    print(f"- 健康检查: http://{host}:{port}/health", file=sys.stderr)
     
     config = uvicorn.Config(app, host=host, port=port, log_level="info")
     server_instance = uvicorn.Server(config)

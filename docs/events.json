@@ -6666,7 +6666,7 @@
                     "param_type": "float"
                 },
                 {
-                    "param_comment": "状态类型，参考[AttributeBuffType](../枚举值/AttributeBuffType.md)",
+                    "param_comment": "状态类型，取值范围0~12，参考 AttributeBuffType",
                     "param_name": "attributeBuffType",
                     "param_type": "int"
                 },
@@ -6686,14 +6686,14 @@
                     "param_type": "bool"
                 },
                 {
-                    "param_comment": "伤害来源，详见Minecraft枚举值文档的[ActorDamageCause](../枚举值/ActorDamageCause.md)",
+                    "param_comment": "伤害来源，详见Minecraft枚举值文档的 ActorDamageCause",
                     "param_name": "cause",
                     "param_type": "str"
                 }
             ],
             "return": {
                 "return_type": "",
-                "return_comment": ""
+                "return_comment": "无"
             },
             "state": [
                 {
@@ -6713,9 +6713,18 @@
                     "operation": "调整",
                     "version": "3.3",
                     "author": "xgb"
+                },
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
                 }
             ],
-            "side": "服务端"
+            "side": "服务端",
+            "remarks": [],
+            "examples": [],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/事件/实体.html#entityeffectdamageserverevent",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         },
         {
             "name": "OnCommandOutputServerEvent",
@@ -6937,11 +6946,41 @@
                     "param_comment": "玩家id",
                     "param_name": "playerId",
                     "param_type": "str"
+                },
+                {
+                    "param_comment": "方块id",
+                    "param_name": "fullName",
+                    "param_type": "str"
+                },
+                {
+                    "param_comment": "方块附加值",
+                    "param_name": "auxData",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "维度id",
+                    "param_name": "dimensionid",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "方块x坐标",
+                    "param_name": "x",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "方块y坐标",
+                    "param_name": "y",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "方块z坐标",
+                    "param_name": "z",
+                    "param_type": "int"
                 }
             ],
             "return": {
                 "return_type": "",
-                "return_comment": ""
+                "return_comment": "无"
             },
             "state": [
                 {
@@ -6949,9 +6988,18 @@
                     "operation": "新增",
                     "version": "1.24",
                     "author": "hdy"
+                },
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
                 }
             ],
-            "side": "服务端"
+            "side": "服务端",
+            "remarks": [],
+            "examples": [],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/事件/玩家.html#playersleepserverevent",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         },
         {
             "name": "PlayerStopSleepServerEvent",
@@ -6965,11 +7013,41 @@
                     "param_comment": "玩家id",
                     "param_name": "playerId",
                     "param_type": "str"
+                },
+                {
+                    "param_comment": "方块id",
+                    "param_name": "fullName",
+                    "param_type": "str"
+                },
+                {
+                    "param_comment": "方块附加值",
+                    "param_name": "auxData",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "维度id",
+                    "param_name": "dimensionid",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "方块x坐标",
+                    "param_name": "x",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "方块y坐标",
+                    "param_name": "y",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "方块z坐标",
+                    "param_name": "z",
+                    "param_type": "int"
                 }
             ],
             "return": {
                 "return_type": "",
-                "return_comment": ""
+                "return_comment": "无"
             },
             "state": [
                 {
@@ -6977,9 +7055,18 @@
                     "operation": "新增",
                     "version": "1.24",
                     "author": "hdy"
+                },
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
                 }
             ],
-            "side": "服务端"
+            "side": "服务端",
+            "remarks": [],
+            "examples": [],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/事件/玩家.html#playerstopsleepserverevent",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         },
         {
             "name": "OnItemPutInEnchantingModelServerEvent",
@@ -9414,11 +9501,31 @@
                     "param_comment": "箱子位置z值",
                     "param_name": "z",
                     "param_type": "int"
+                },
+                {
+                    "param_comment": "方块名称，如minecraft:chest",
+                    "param_name": "fullName",
+                    "param_type": "str"
+                },
+                {
+                    "param_comment": "方块附加值",
+                    "param_name": "auxData",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "维度id",
+                    "param_name": "dimensionId",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "是否是大箱子，仅箱子(chest)时存在该参数，末影箱/木桶/潜影盒不存在该参数",
+                    "param_name": "isLargeChest",
+                    "param_type": "bool"
                 }
             ],
             "return": {
                 "return_type": "",
-                "return_comment": ""
+                "return_comment": "无"
             },
             "state": [
                 {
@@ -9426,9 +9533,18 @@
                     "operation": "修复",
                     "version": "2.12",
                     "author": "qiuyukun"
+                },
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
                 }
             ],
-            "side": "客户端"
+            "side": "客户端",
+            "remarks": [],
+            "examples": [],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/事件/UI.html#clientchestopenevent",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         },
         {
             "name": "ClientChestCloseEvent",
@@ -9437,10 +9553,51 @@
             "doc_class_path": [
                 "UI"
             ],
-            "param": [],
+            "param": [
+                {
+                    "param_comment": "玩家实体id",
+                    "param_name": "playerId",
+                    "param_type": "str"
+                },
+                {
+                    "param_comment": "箱子位置x值",
+                    "param_name": "x",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "箱子位置y值",
+                    "param_name": "y",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "箱子位置z值",
+                    "param_name": "z",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "方块名称，如minecraft:chest",
+                    "param_name": "fullName",
+                    "param_type": "str"
+                },
+                {
+                    "param_comment": "方块附加值",
+                    "param_name": "auxData",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "维度id",
+                    "param_name": "dimensionId",
+                    "param_type": "int"
+                },
+                {
+                    "param_comment": "是否是大箱子，仅箱子(chest)时存在该参数，末影箱/木桶/潜影盒不存在该参数",
+                    "param_name": "isLargeChest",
+                    "param_type": "bool"
+                }
+            ],
             "return": {
                 "return_type": "",
-                "return_comment": ""
+                "return_comment": "无"
             },
             "state": [
                 {
@@ -9448,9 +9605,20 @@
                     "operation": "修复",
                     "version": "2.12",
                     "author": "qiuyukun"
+                },
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
                 }
             ],
-            "side": "客户端"
+            "side": "客户端",
+            "remarks": [
+                "注：关闭时若容器管理器已提前释放，参数可能为空"
+            ],
+            "examples": [],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/事件/UI.html#clientchestcloseevent",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         },
         {
             "name": "CloseNeteaseShopEvent",
@@ -12730,14 +12898,14 @@
                     "param_type": "dict"
                 },
                 {
-                    "param_comment": "变化原因，详见Minecraft枚举值文档的[PermissionChangeCause](../枚举值/PermissionChangeCause.md)",
+                    "param_comment": "变化原因，详见Minecraft枚举值文档的 PermissionChangeCause",
                     "param_name": "changeCause",
                     "param_type": "int"
                 }
             ],
             "return": {
                 "return_type": "",
-                "return_comment": ""
+                "return_comment": "无"
             },
             "state": [
                 {
@@ -12745,9 +12913,22 @@
                     "operation": "新增",
                     "version": "3.5",
                     "author": "zhujinan"
+                },
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
                 }
             ],
-            "side": "客户端"
+            "side": "客户端",
+            "remarks": [
+                "具体权限说明： 权限字段 类型 说明 build bool 放置方块 mine bool 采集方块 doorsandswitches bool 使用门和开关 opencontainers bool 打开容器 attackplayers bool 攻击玩家 attackmobs bool 攻击生物 op bool 操作员命令 teleport bool 使用传送",
+                "当PlayerPermissionChangeServerEvent事件返回\"cancel\"为True时，权限变动被取消，该事件不会触发。",
+                "如果进入游戏的玩家权限为“成员”时，不会触发此事件。"
+            ],
+            "examples": [],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/事件/玩家.html#playerpermissionchangeclientevent",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         },
         {
             "name": "PlayerTryPutCustomContainerItemClientEvent",

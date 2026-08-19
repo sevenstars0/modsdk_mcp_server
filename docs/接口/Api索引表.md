@@ -1,6 +1,6 @@
 ---
 source_url: "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/%E6%8E%A5%E5%8F%A3/Api%E7%B4%A2%E5%BC%95%E8%A1%A8.html"
-last_modified: "Wed, 29 Apr 2026 14:40:01 GMT"
+last_modified: "Mon, 03 Aug 2026 03:57:13 GMT"
 synced_from: "NetEase developer official website"
 ---
 
@@ -1221,6 +1221,7 @@ synced_from: "NetEase developer official website"
    | AddPlayerTexture | 客户端 | 增加玩家渲染贴图 |
    | RebuildPlayerRender | 客户端 | 重建玩家的数据渲染器 |
    | RemovePlayerAnimationController | 客户端 | 移除玩家渲染动画控制器 |
+   | RemovePlayerAnimationFromState | 客户端 | 在玩家的动画控制器中的状态移除动画或者动画控制器 |
    | RemovePlayerGeometry | 客户端 | 删除玩家渲染几何体 |
    | RemovePlayerRenderController | 客户端 | 删除玩家渲染控制器 |
    | ResetSkin | 客户端 | 还原默认皮肤 |

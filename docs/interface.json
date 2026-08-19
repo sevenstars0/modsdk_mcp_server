@@ -4249,9 +4249,23 @@
                     "operation": "新增",
                     "version": "3.0",
                     "author": "qyk"
+                },
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
                 }
             ],
-            "side": "服务端"
+            "side": "服务端",
+            "remarks": [
+                "此接口设置的值退出游戏时无法被保存,每次进入游戏后,需要重新设置",
+                "群系名字参数需要填写命名空间，无命名空间的参数接口将会自动补全minecraft的命名空间"
+            ],
+            "examples": [
+                "import mod.server.extraServerApi as serverApi\ncomp = serverApi.GetEngineCompFactory().CreateBiome(levelId)\nresult = comp.SetBiomeInfo(\"desert\", (0.125, 1), 0.15, 1, True)"
+            ],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/接口/世界/地图.html#setbiomeinfo",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         },
         {
             "name": "GetBiomeInfo",
@@ -4277,9 +4291,22 @@
                     "operation": "新增",
                     "version": "3.0",
                     "author": "qyk"
+                },
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
                 }
             ],
-            "side": "服务端"
+            "side": "服务端",
+            "remarks": [
+                "群系名字参数需要填写命名空间，无命名空间的参数接口将会自动补全minecraft的命名空间"
+            ],
+            "examples": [
+                "import mod.server.extraServerApi as serverApi\ncomp = serverApi.GetEngineCompFactory().CreateBiome(levelId)\ninfo = comp.GetBiomeInfo(\"desert\")"
+            ],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/接口/世界/地图.html#getbiomeinfo",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         },
         {
             "name": "GetBiomeName",
@@ -4360,9 +4387,23 @@
                     "operation": "新增",
                     "version": "3.0",
                     "author": "bailei"
+                },
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
                 }
             ],
-            "side": "服务端"
+            "side": "服务端",
+            "remarks": [
+                "只支持设置已加载的坐标，支持设置2D和3D群系，3D群系有特殊规则(详情参考： 3D群系是特殊 )",
+                "群系名字参数需要填写命名空间，无命名空间的参数接口将会自动补全minecraft的命名空间"
+            ],
+            "examples": [
+                "import mod.server.extraServerApi as serverApi\ncomp = serverApi.GetEngineCompFactory().CreateBiome(levelId)\nsetState = comp.SetBiomeByPos((0, 80, 0), \"desert\", 0)"
+            ],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/接口/世界/地图.html#setbiomebypos",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         },
         {
             "name": "SetBiomeByPosList",
@@ -4398,9 +4439,23 @@
                     "operation": "新增",
                     "version": "3.0",
                     "author": "bailei"
+                },
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
                 }
             ],
-            "side": "服务端"
+            "side": "服务端",
+            "remarks": [
+                "只支持设置已加载的坐标，支持设置2D和3D群系，3D群系有特殊规则(详情参考： 3D群系是特殊 )",
+                "群系名字参数需要填写命名空间，无命名空间的参数接口将会自动补全minecraft的命名空间"
+            ],
+            "examples": [
+                "import mod.server.extraServerApi as serverApi\ncomp = serverApi.GetEngineCompFactory().CreateBiome(levelId)\nposList = [(0, 80, 0)]\nsetPosListState = comp.SetBiomeByPosList(posList, \"desert\", 0)\n#返回字典中 \"Update\"表示整体设置是否成功，类型bool，有任何一个坐标设置失败 Update就会被设置为False\nsetAllState = setPosListState[\"Update\"]\n#返回字典中 \"BlockList\"表示设置失败的坐标列表，类型list，list中的Python Object和传入的list中的Python Object是同一个，比如传入非法的字符串\"a\"，那么\"BlockList\"中也会返回\"a\"\nsetFailList = setPosListState[\"BlockList\"]"
+            ],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/接口/世界/地图.html#setbiomebyposlist",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         },
         {
             "name": "SetBiomeByVolume",
@@ -4441,9 +4496,23 @@
                     "operation": "新增",
                     "version": "3.0",
                     "author": "bailei"
+                },
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
                 }
             ],
-            "side": "服务端"
+            "side": "服务端",
+            "remarks": [
+                "只支持设置已加载的区块，设置超出维度范围的空间会被忽视掉，支持设置2D和3D群系，3D群系有特殊规则(详情参考： 3D群系是特殊 )",
+                "群系名字参数需要填写命名空间，无命名空间的参数接口将会自动补全minecraft的命名空间"
+            ],
+            "examples": [
+                "import mod.server.extraServerApi as serverApi\ncomp = serverApi.GetEngineCompFactory().CreateBiome(levelId)\nminPos = (0, 0, 0)\nmaxPos = (31,31,31)\nsetState = comp.SetBiomeByVolume(minPos, maxPos, \"desert\", 0)"
+            ],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/接口/世界/地图.html#setbiomebyvolume",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         }
     ],
     "client.component.blockCompClient.BlockCompClient": [
@@ -12836,6 +12905,52 @@
                 }
             ],
             "side": "客户端"
+        },
+        {
+            "name": "RemovePlayerAnimationFromState",
+            "path": "client.component.actorRenderCompClient.ActorRenderCompClient",
+            "desc": "在玩家的动画控制器中的状态移除动画或者动画控制器",
+            "doc_class_path": [
+                "玩家/渲染"
+            ],
+            "param": [
+                {
+                    "param_comment": "动画控制器名称，如root（controller.animation.player.root）",
+                    "param_name": "animationControllerName",
+                    "param_type": "str"
+                },
+                {
+                    "param_comment": "动画状态名称，如first_person",
+                    "param_name": "stateName",
+                    "param_type": "str"
+                },
+                {
+                    "param_comment": "要移除的动画名称或动画控制器名称，如first_person_attack_controller_new",
+                    "param_name": "animationName",
+                    "param_type": "str"
+                }
+            ],
+            "return": {
+                "return_type": "bool",
+                "return_comment": "是否成功。controller/state 不存在或参数错误返False；动画不在该state中视为幂等成功，返True。"
+            },
+            "state": [
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
+                }
+            ],
+            "side": "客户端",
+            "remarks": [
+                "调用该接口后需要调用 RebuildPlayerRender 才会生效",
+                "该玩家重新进入视野时仍会生效，引擎会自动重新调用一遍"
+            ],
+            "examples": [
+                "import mod.client.extraClientApi as clientApi\ncomp = clientApi.GetEngineCompFactory().CreateActorRender(playerId)\ncomp.RemovePlayerAnimationFromState(\"root\", \"first_person\", \"first_person_attack_controller_new\")"
+            ],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/接口/玩家/渲染.html#removeplayeranimationfromstate",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         }
     ],
     "client.component.cameraCompClient.CameraComponentClient": [
@@ -14019,11 +14134,16 @@
                     "param_comment": "方块位置",
                     "param_name": "pos",
                     "param_type": "tuple(int,int,int)"
+                },
+                {
+                    "param_comment": "是否打印netease:aabb碰撞参数，默认为False",
+                    "param_name": "getAll",
+                    "param_type": "bool"
                 }
             ],
             "return": {
                 "return_type": "dict",
-                "return_comment": "方块aabb字典"
+                "return_comment": "方块aabb字典, 如果getAll为True则返回netease:aabb字典"
             },
             "state": [
                 {
@@ -14031,9 +14151,22 @@
                     "operation": "新增",
                     "version": "2.1",
                     "author": "xusifan"
+                },
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
                 }
             ],
-            "side": "客户端"
+            "side": "客户端",
+            "remarks": [
+                "由于方块的碰撞盒可以随临近方块改变而改变，因此该接口返回的是调用时方块collision的aabb"
+            ],
+            "examples": [
+                "import mod.client.extraClientApi as clientApi\ncomp = clientApi.GetEngineCompFactory().CreateBlockInfo(levelId)\ncomp.GetBlockCollision((x,y,z))\n# getAll为True则返回netease:aabb字典\ncomp = clientApi.GetEngineCompFactory().CreateBlockInfo(levelId)\ncomp.GetBlockCollision((x,y,z), True)"
+            ],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/接口/世界/方块管理.html#getblockcollision",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         },
         {
             "name": "GetBlock",
@@ -15951,8 +16084,22 @@
                 "return_type": "bool",
                 "return_comment": "停止是否成功"
             },
-            "state": [],
-            "side": "客户端"
+            "state": [
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
+                }
+            ],
+            "side": "客户端",
+            "remarks": [
+                "使用PlayCustomMusic播放音效或音乐后，7帧内再使用StopCustomMusicById接口停止播放该musicId音乐/音效，会有概率停止失败，且后续再使用StopCustomMusicById接口停止播放该musicId音乐/音效无效。因此在上述情况下，建议开发者使用计时器延迟15帧以上执行该接口"
+            ],
+            "examples": [
+                "import mod.client.extraClientApi as clientApi\ncomp = clientApi.GetEngineCompFactory().CreateCustomAudio(levelId)\nmusicId = comp.PlayCustomMusic(\"sound001\", (1,1,1), 1, 1, False, False)\ncomp.StopCustomMusicById(musicId, 0)"
+            ],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/接口/音效.html#stopcustommusicbyid",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:13 GMT"
         },
         {
             "name": "SetCustomMusicLoop",
@@ -19321,7 +19468,9 @@
             "name": "GetScrollViewContentPath",
             "path": "client.ui.controls.scrollViewUIControl.ScrollViewUIControl",
             "desc": "返回该scroll_view内容的路径",
-            "doc_class_path": [],
+            "doc_class_path": [
+                "自定义UI/UI控件"
+            ],
             "param": [],
             "return": {
                 "return_type": "str",
@@ -19339,9 +19488,23 @@
                     "operation": "新增",
                     "version": "1.21.nodoc",
                     "author": "panlei"
+                },
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
                 }
             ],
-            "side": "客户端"
+            "side": "客户端",
+            "remarks": [
+                "scroll_view的路径是动态的，在触控模式和键鼠模式（按f11可切换的两种操作方式）下的路径不同，每次使用scroll_view及其子控件的路径，都应该重新调用一次本接口。",
+                "如果不想让路径随操作模式变化，可以指定$touch变量为true，此时路径将固定为touch_path。 \"scroll_view0@common.scrolling_panel\": { // 手动指定$touch变量为true \"$touch\": true ... }"
+            ],
+            "examples": [
+                "# we want get scroll_view content path\nscrollViewPath = \"/scroll_view0\"\nscrollViewUIControl = uiNode.GetBaseUIControl(scrollViewPath).asScrollView()\npath = scrollViewUIControl.GetScrollViewContentPath()"
+            ],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/接口/自定义UI/UI控件.html#getscrollviewcontentpath",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:13 GMT"
         },
         {
             "name": "GetScrollViewContentControl",
@@ -19893,11 +20056,16 @@
                     "param_comment": "方块所在维度,不填时默认为-1",
                     "param_name": "dimensionId",
                     "param_type": "int"
+                },
+                {
+                    "param_comment": "是否打印netease:aabb碰撞参数，默认为False",
+                    "param_name": "getAll",
+                    "param_type": "bool"
                 }
             ],
             "return": {
                 "return_type": "dict",
-                "return_comment": "方块aabb字典"
+                "return_comment": "方块aabb字典, 如果getAll为True则返回netease:aabb字典"
             },
             "state": [
                 {
@@ -19905,9 +20073,23 @@
                     "operation": "新增",
                     "version": "2.1",
                     "author": "xusifan"
+                },
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
                 }
             ],
-            "side": "服务端"
+            "side": "服务端",
+            "remarks": [
+                "已经加载的地形才能获取方块信息，支持获取对应维度的常加载区块内方块信息",
+                "由于方块的碰撞盒可以随临近方块改变而改变，因此该接口返回的是调用时方块collision的aabb"
+            ],
+            "examples": [
+                "import mod.server.extraServerApi as serverApi\ncomp = serverApi.GetEngineCompFactory().CreateBlockInfo(levelId)\nblockDict = comp.GetBlockCollision((0, 5, 0), 0)\n# getAll为True则返回netease:aabb字典\ncomp = serverApi.GetEngineCompFactory().CreateBlockInfo(levelId)\nblockDict = comp.GetBlockCollision((0, 5, 0), 0, True)"
+            ],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/接口/世界/方块管理.html#getblockcollision",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         },
         {
             "name": "GetBlockClip",
@@ -23703,8 +23885,22 @@
                 "return_type": "bool",
                 "return_comment": "是否设置成功"
             },
-            "state": [],
-            "side": "服务端"
+            "state": [
+                {
+                    "comment": "来自网易开发者官网 3.9 文档",
+                    "operation": "同步",
+                    "version": "3.9"
+                }
+            ],
+            "side": "服务端",
+            "remarks": [
+                "注：该接口“不可移动”指不能移动、跳跃、飞行、潜行，并且飞行状态下也不能上升下降"
+            ],
+            "examples": [
+                "import mod.server.extraServerApi as serverApi\ncomp = serverApi.GetEngineCompFactory().CreatePlayer(playerId)\ncomp.SetPlayerMovable(False)"
+            ],
+            "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcdocs/1-ModAPI/接口/玩家/行为.html#setplayermovable",
+            "source_last_modified": "Mon, 03 Aug 2026 03:57:12 GMT"
         },
         {
             "name": "SetPlayerJumpable",

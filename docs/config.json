@@ -240,6 +240,8 @@
         }, 
         {
             "children": [
+                "/mcdocs/1-ModAPI/更新信息/3.9",
+                "/mcdocs/1-ModAPI/更新信息/3.8",
                 "/mcdocs/1-ModAPI/更新信息/3.6", 
                 "/mcdocs/1-ModAPI/更新信息/3.5", 
                 "/mcdocs/1-ModAPI/更新信息/3.4", 

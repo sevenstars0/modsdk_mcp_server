@@ -1,0 +1,2300 @@
+{
+  "schema_version": "1.0",
+  "source_id": "netease-python-module-whitelist",
+  "source_url": "https://mc.163.com/dev/mcmanual/mc-dev/mcguide/36-%E5%AE%A1%E6%A0%B8%E4%B8%8E%E4%B8%8B%E6%9E%B6/%E8%AF%BE%E7%A8%8B07-Python%E6%A8%A1%E5%9D%97%E7%99%BD%E5%90%8D%E5%8D%95.html",
+  "retrieved_at": "2026-08-16T23:09:19Z",
+  "last_modified": "2026-08-03T03:57:13Z",
+  "source_sha256": "486747559f1247823cb32bcd3546c303aae050491f61f2fb57cece8a162028dd",
+  "modules_sha256": "78680424721feda31860ef4a454f1e24639425adb4ae5335add8f54be8fbcd44",
+  "module_count": 456,
+  "normalization": {
+    "empty_cells_removed": 9,
+    "annotations_removed": {
+      "ast（3.3新增）": "ast"
+    }
+  },
+  "entries": [
+    {
+      "raw_display": "__future__",
+      "normalized_name": "__future__"
+    },
+    {
+      "raw_display": "mod.server.component.actorPushableCompServer",
+      "normalized_name": "mod.server.component.actorPushableCompServer"
+    },
+    {
+      "raw_display": "client.component.particleSystemCompClient",
+      "normalized_name": "client.component.particleSystemCompClient"
+    },
+    {
+      "raw_display": "_md5",
+      "normalized_name": "_md5"
+    },
+    {
+      "raw_display": "mod.server.component.aiCommandCompServer",
+      "normalized_name": "mod.server.component.aiCommandCompServer"
+    },
+    {
+      "raw_display": "client.component.particleTransComp",
+      "normalized_name": "client.component.particleTransComp"
+    },
+    {
+      "raw_display": "_random",
+      "normalized_name": "_random"
+    },
+    {
+      "raw_display": "mod.server.component.attrCompServer",
+      "normalized_name": "mod.server.component.attrCompServer"
+    },
+    {
+      "raw_display": "client.component.playerAnimCompClient",
+      "normalized_name": "client.component.playerAnimCompClient"
+    },
+    {
+      "raw_display": "logging",
+      "normalized_name": "logging"
+    },
+    {
+      "raw_display": "mod.server.component.auxValueCompServer",
+      "normalized_name": "mod.server.component.auxValueCompServer"
+    },
+    {
+      "raw_display": "client.component.playerCompClient",
+      "normalized_name": "client.component.playerCompClient"
+    },
+    {
+      "raw_display": "mod_log",
+      "normalized_name": "mod_log"
+    },
+    {
+      "raw_display": "mod.server.component.biomeCompServer",
+      "normalized_name": "mod.server.component.biomeCompServer"
+    },
+    {
+      "raw_display": "client.component.playerViewCompClient",
+      "normalized_name": "client.component.playerViewCompClient"
+    },
+    {
+      "raw_display": "traceback",
+      "normalized_name": "traceback"
+    },
+    {
+      "raw_display": "mod.server.component.blockCompServer",
+      "normalized_name": "mod.server.component.blockCompServer"
+    },
+    {
+      "raw_display": "client.component.posCompClient",
+      "normalized_name": "client.component.posCompClient"
+    },
+    {
+      "raw_display": "random",
+      "normalized_name": "random"
+    },
+    {
+      "raw_display": "mod.server.component.blockEntityExDataCompServer",
+      "normalized_name": "mod.server.component.blockEntityExDataCompServer"
+    },
+    {
+      "raw_display": "client.component.postProcessControlComp",
+      "normalized_name": "client.component.postProcessControlComp"
+    },
+    {
+      "raw_display": "json",
+      "normalized_name": "json"
+    },
+    {
+      "raw_display": "mod.server.component.blockInfoCompServer",
+      "normalized_name": "mod.server.component.blockInfoCompServer"
+    },
+    {
+      "raw_display": "client.component.queryVariableCompClient",
+      "normalized_name": "client.component.queryVariableCompClient"
+    },
+    {
+      "raw_display": "math",
+      "normalized_name": "math"
+    },
+    {
+      "raw_display": "mod.server.component.blockStateCompServer",
+      "normalized_name": "mod.server.component.blockStateCompServer"
+    },
+    {
+      "raw_display": "client.component.recipeCompClient",
+      "normalized_name": "client.component.recipeCompClient"
+    },
+    {
+      "raw_display": "time",
+      "normalized_name": "time"
+    },
+    {
+      "raw_display": "mod.server.component.blockUseEventWhiteListCompServer",
+      "normalized_name": "mod.server.component.blockUseEventWhiteListCompServer"
+    },
+    {
+      "raw_display": "client.component.rideCompClient",
+      "normalized_name": "client.component.rideCompClient"
+    },
+    {
+      "raw_display": "copy",
+      "normalized_name": "copy"
+    },
+    {
+      "raw_display": "mod.server.component.breathCompServer",
+      "normalized_name": "mod.server.component.breathCompServer"
+    },
+    {
+      "raw_display": "client.component.rotCompClient",
+      "normalized_name": "client.component.rotCompClient"
+    },
+    {
+      "raw_display": "base64",
+      "normalized_name": "base64"
+    },
+    {
+      "raw_display": "mod.server.component.bulletAttributesCompServer",
+      "normalized_name": "mod.server.component.bulletAttributesCompServer"
+    },
+    {
+      "raw_display": "client.component.skyRenderCompClient",
+      "normalized_name": "client.component.skyRenderCompClient"
+    },
+    {
+      "raw_display": "bisect",
+      "normalized_name": "bisect"
+    },
+    {
+      "raw_display": "mod.server.component.chatExtensionCompServer",
+      "normalized_name": "mod.server.component.chatExtensionCompServer"
+    },
+    {
+      "raw_display": "client.component.tameCompClient",
+      "normalized_name": "client.component.tameCompClient"
+    },
+    {
+      "raw_display": "calendar",
+      "normalized_name": "calendar"
+    },
+    {
+      "raw_display": "mod.server.component.chestContainerCompServer",
+      "normalized_name": "mod.server.component.chestContainerCompServer"
+    },
+    {
+      "raw_display": "client.component.textBoardCompClient",
+      "normalized_name": "client.component.textBoardCompClient"
+    },
+    {
+      "raw_display": "datetime",
+      "normalized_name": "datetime"
+    },
+    {
+      "raw_display": "mod.server.component.chunkSourceComp",
+      "normalized_name": "mod.server.component.chunkSourceComp"
+    },
+    {
+      "raw_display": "client.component.textNotifyCompClient",
+      "normalized_name": "client.component.textNotifyCompClient"
+    },
+    {
+      "raw_display": "re",
+      "normalized_name": "re"
+    },
+    {
+      "raw_display": "mod.server.component.collisionBoxCompServer",
+      "normalized_name": "mod.server.component.collisionBoxCompServer"
+    },
+    {
+      "raw_display": "client.component.timeCompClient",
+      "normalized_name": "client.component.timeCompClient"
+    },
+    {
+      "raw_display": "Queue",
+      "normalized_name": "Queue"
+    },
+    {
+      "raw_display": "mod.server.component.commandCompServer",
+      "normalized_name": "mod.server.component.commandCompServer"
+    },
+    {
+      "raw_display": "client.component.virtualWorldCompClient",
+      "normalized_name": "client.component.virtualWorldCompClient"
+    },
+    {
+      "raw_display": "string",
+      "normalized_name": "string"
+    },
+    {
+      "raw_display": "mod.server.component.controlAiCompServer",
+      "normalized_name": "mod.server.component.controlAiCompServer"
+    },
+    {
+      "raw_display": "server",
+      "normalized_name": "server"
+    },
+    {
+      "raw_display": "struct",
+      "normalized_name": "struct"
+    },
+    {
+      "raw_display": "mod.server.component.dimensionCompServer",
+      "normalized_name": "mod.server.component.dimensionCompServer"
+    },
+    {
+      "raw_display": "server.extraServerApi",
+      "normalized_name": "server.extraServerApi"
+    },
+    {
+      "raw_display": "types",
+      "normalized_name": "types"
+    },
+    {
+      "raw_display": "mod.server.component.effectCompServer",
+      "normalized_name": "mod.server.component.effectCompServer"
+    },
+    {
+      "raw_display": "server.serverEvent",
+      "normalized_name": "server.serverEvent"
+    },
+    {
+      "raw_display": "weakref",
+      "normalized_name": "weakref"
+    },
+    {
+      "raw_display": "mod.server.component.engineCompFactoryServer",
+      "normalized_name": "mod.server.component.engineCompFactoryServer"
+    },
+    {
+      "raw_display": "server.blockEntityData",
+      "normalized_name": "server.blockEntityData"
+    },
+    {
+      "raw_display": "itertools",
+      "normalized_name": "itertools"
+    },
+    {
+      "raw_display": "mod.server.component.engineTypeCompServer",
+      "normalized_name": "mod.server.component.engineTypeCompServer"
+    },
+    {
+      "raw_display": "server.gamePlay",
+      "normalized_name": "server.gamePlay"
+    },
+    {
+      "raw_display": "fnmatch",
+      "normalized_name": "fnmatch"
+    },
+    {
+      "raw_display": "mod.server.component.entityComponentServer",
+      "normalized_name": "mod.server.component.entityComponentServer"
+    },
+    {
+      "raw_display": "server.gamePlay.AI",
+      "normalized_name": "server.gamePlay.AI"
+    },
+    {
+      "raw_display": "posixpath",
+      "normalized_name": "posixpath"
+    },
+    {
+      "raw_display": "mod.server.component.entityDefinitionsCompServer",
+      "normalized_name": "mod.server.component.entityDefinitionsCompServer"
+    },
+    {
+      "raw_display": "server.gamePlay.AI.customGoal",
+      "normalized_name": "server.gamePlay.AI.customGoal"
+    },
+    {
+      "raw_display": "keyword",
+      "normalized_name": "keyword"
+    },
+    {
+      "raw_display": "mod.server.component.entityEventCompServer",
+      "normalized_name": "mod.server.component.entityEventCompServer"
+    },
+    {
+      "raw_display": "server.system",
+      "normalized_name": "server.system"
+    },
+    {
+      "raw_display": "hashlib",
+      "normalized_name": "hashlib"
+    },
+    {
+      "raw_display": "mod.server.component.exDataCompServer",
+      "normalized_name": "mod.server.component.exDataCompServer"
+    },
+    {
+      "raw_display": "server.system.serverSystem",
+      "normalized_name": "server.system.serverSystem"
+    },
+    {
+      "raw_display": "zlib",
+      "normalized_name": "zlib"
+    },
+    {
+      "raw_display": "mod.server.component.expCompServer",
+      "normalized_name": "mod.server.component.expCompServer"
+    },
+    {
+      "raw_display": "server.component",
+      "normalized_name": "server.component"
+    },
+    {
+      "raw_display": "heapq",
+      "normalized_name": "heapq"
+    },
+    {
+      "raw_display": "mod.server.component.explosionCompServer",
+      "normalized_name": "mod.server.component.explosionCompServer"
+    },
+    {
+      "raw_display": "server.component.achievementCompServer",
+      "normalized_name": "server.component.achievementCompServer"
+    },
+    {
+      "raw_display": "abc",
+      "normalized_name": "abc"
+    },
+    {
+      "raw_display": "mod.server.component.featureCompServer",
+      "normalized_name": "mod.server.component.featureCompServer"
+    },
+    {
+      "raw_display": "server.component.actionCompServer",
+      "normalized_name": "server.component.actionCompServer"
+    },
+    {
+      "raw_display": "uuid",
+      "normalized_name": "uuid"
+    },
+    {
+      "raw_display": "mod.server.component.flyCompServer",
+      "normalized_name": "mod.server.component.flyCompServer"
+    },
+    {
+      "raw_display": "server.component.actorCollidableCompServer",
+      "normalized_name": "server.component.actorCollidableCompServer"
+    },
+    {
+      "raw_display": "functools",
+      "normalized_name": "functools"
+    },
+    {
+      "raw_display": "mod.server.component.gameCompServer",
+      "normalized_name": "mod.server.component.gameCompServer"
+    },
+    {
+      "raw_display": "server.component.actorLootCompServer",
+      "normalized_name": "server.component.actorLootCompServer"
+    },
+    {
+      "raw_display": "collections",
+      "normalized_name": "collections"
+    },
+    {
+      "raw_display": "mod.server.component.gravityCompServer",
+      "normalized_name": "mod.server.component.gravityCompServer"
+    },
+    {
+      "raw_display": "server.component.actorMotionCompServer",
+      "normalized_name": "server.component.actorMotionCompServer"
+    },
+    {
+      "raw_display": "warnings",
+      "normalized_name": "warnings"
+    },
+    {
+      "raw_display": "mod.server.component.httpToWebServerCompServer",
+      "normalized_name": "mod.server.component.httpToWebServerCompServer"
+    },
+    {
+      "raw_display": "server.component.actorOwnerCompServer",
+      "normalized_name": "server.component.actorOwnerCompServer"
+    },
+    {
+      "raw_display": "io",
+      "normalized_name": "io"
+    },
+    {
+      "raw_display": "mod.server.component.hurtCompServer",
+      "normalized_name": "mod.server.component.hurtCompServer"
+    },
+    {
+      "raw_display": "server.component.actorPushableCompServer",
+      "normalized_name": "server.component.actorPushableCompServer"
+    },
+    {
+      "raw_display": "gzip",
+      "normalized_name": "gzip"
+    },
+    {
+      "raw_display": "mod.server.component.interactCompServer",
+      "normalized_name": "mod.server.component.interactCompServer"
+    },
+    {
+      "raw_display": "server.component.aiCommandCompServer",
+      "normalized_name": "server.component.aiCommandCompServer"
+    },
+    {
+      "raw_display": "singleton",
+      "normalized_name": "singleton"
+    },
+    {
+      "raw_display": "mod.server.component.itemBannedCompServer",
+      "normalized_name": "mod.server.component.itemBannedCompServer"
+    },
+    {
+      "raw_display": "server.component.attrCompServer",
+      "normalized_name": "server.component.attrCompServer"
+    },
+    {
+      "raw_display": "threading",
+      "normalized_name": "threading"
+    },
+    {
+      "raw_display": "mod.server.component.itemCompServer",
+      "normalized_name": "mod.server.component.itemCompServer"
+    },
+    {
+      "raw_display": "server.component.auxValueCompServer",
+      "normalized_name": "server.component.auxValueCompServer"
+    },
+    {
+      "raw_display": "binascii",
+      "normalized_name": "binascii"
+    },
+    {
+      "raw_display": "mod.server.component.levelCompServer",
+      "normalized_name": "mod.server.component.levelCompServer"
+    },
+    {
+      "raw_display": "server.component.biomeCompServer",
+      "normalized_name": "server.component.biomeCompServer"
+    },
+    {
+      "raw_display": "cStringIO",
+      "normalized_name": "cStringIO"
+    },
+    {
+      "raw_display": "mod.server.component.lootCompServer",
+      "normalized_name": "mod.server.component.lootCompServer"
+    },
+    {
+      "raw_display": "server.component.blockCompServer",
+      "normalized_name": "server.component.blockCompServer"
+    },
+    {
+      "raw_display": "contextlib",
+      "normalized_name": "contextlib"
+    },
+    {
+      "raw_display": "mod.server.component.mobSpawnCompServer",
+      "normalized_name": "mod.server.component.mobSpawnCompServer"
+    },
+    {
+      "raw_display": "server.component.blockEntityExDataCompServer",
+      "normalized_name": "server.component.blockEntityExDataCompServer"
+    },
+    {
+      "raw_display": "builtin_modules._inspect",
+      "normalized_name": "builtin_modules._inspect"
+    },
+    {
+      "raw_display": "mod.server.component.modAttrCompServer",
+      "normalized_name": "mod.server.component.modAttrCompServer"
+    },
+    {
+      "raw_display": "server.component.blockInfoCompServer",
+      "normalized_name": "server.component.blockInfoCompServer"
+    },
+    {
+      "raw_display": "builtin_modules._operator",
+      "normalized_name": "builtin_modules._operator"
+    },
+    {
+      "raw_display": "mod.server.component.modelCompServer",
+      "normalized_name": "mod.server.component.modelCompServer"
+    },
+    {
+      "raw_display": "server.component.blockStateCompServer",
+      "normalized_name": "server.component.blockStateCompServer"
+    },
+    {
+      "raw_display": "mod.builtin_modules._inspect",
+      "normalized_name": "mod.builtin_modules._inspect"
+    },
+    {
+      "raw_display": "mod.server.component.moveToCompServer",
+      "normalized_name": "mod.server.component.moveToCompServer"
+    },
+    {
+      "raw_display": "server.component.blockUseEventWhiteListCompServer",
+      "normalized_name": "server.component.blockUseEventWhiteListCompServer"
+    },
+    {
+      "raw_display": "mod.builtin_modules._operator",
+      "normalized_name": "mod.builtin_modules._operator"
+    },
+    {
+      "raw_display": "mod.server.component.msgCompServer",
+      "normalized_name": "mod.server.component.msgCompServer"
+    },
+    {
+      "raw_display": "server.component.breathCompServer",
+      "normalized_name": "server.component.breathCompServer"
+    },
+    {
+      "raw_display": "mod",
+      "normalized_name": "mod"
+    },
+    {
+      "raw_display": "mod.server.component.nameCompServer",
+      "normalized_name": "mod.server.component.nameCompServer"
+    },
+    {
+      "raw_display": "server.component.bulletAttributesCompServer",
+      "normalized_name": "server.component.bulletAttributesCompServer"
+    },
+    {
+      "raw_display": "mod.client",
+      "normalized_name": "mod.client"
+    },
+    {
+      "raw_display": "mod.server.component.persistenceCompServer",
+      "normalized_name": "mod.server.component.persistenceCompServer"
+    },
+    {
+      "raw_display": "server.component.chatExtensionCompServer",
+      "normalized_name": "server.component.chatExtensionCompServer"
+    },
+    {
+      "raw_display": "mod.client.extraClientApi",
+      "normalized_name": "mod.client.extraClientApi"
+    },
+    {
+      "raw_display": "mod.server.component.petCompServer",
+      "normalized_name": "mod.server.component.petCompServer"
+    },
+    {
+      "raw_display": "server.component.chestContainerCompServer",
+      "normalized_name": "server.component.chestContainerCompServer"
+    },
+    {
+      "raw_display": "mod.client.clientEvent",
+      "normalized_name": "mod.client.clientEvent"
+    },
+    {
+      "raw_display": "mod.server.component.playerCompServer",
+      "normalized_name": "mod.server.component.playerCompServer"
+    },
+    {
+      "raw_display": "server.component.chunkSourceComp",
+      "normalized_name": "server.component.chunkSourceComp"
+    },
+    {
+      "raw_display": "mod.client.ui",
+      "normalized_name": "mod.client.ui"
+    },
+    {
+      "raw_display": "mod.server.component.portalCompServer",
+      "normalized_name": "mod.server.component.portalCompServer"
+    },
+    {
+      "raw_display": "server.component.collisionBoxCompServer",
+      "normalized_name": "server.component.collisionBoxCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.screenNode",
+      "normalized_name": "mod.client.ui.screenNode"
+    },
+    {
+      "raw_display": "mod.server.component.posCompServer",
+      "normalized_name": "mod.server.component.posCompServer"
+    },
+    {
+      "raw_display": "server.component.commandCompServer",
+      "normalized_name": "server.component.commandCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.screenController",
+      "normalized_name": "mod.client.ui.screenController"
+    },
+    {
+      "raw_display": "mod.server.component.projectileCompServer",
+      "normalized_name": "mod.server.component.projectileCompServer"
+    },
+    {
+      "raw_display": "server.component.controlAiCompServer",
+      "normalized_name": "server.component.controlAiCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.viewBinder",
+      "normalized_name": "mod.client.ui.viewBinder"
+    },
+    {
+      "raw_display": "mod.server.component.recipeCompServer",
+      "normalized_name": "mod.server.component.recipeCompServer"
+    },
+    {
+      "raw_display": "server.component.dimensionCompServer",
+      "normalized_name": "server.component.dimensionCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.viewRequest",
+      "normalized_name": "mod.client.ui.viewRequest"
+    },
+    {
+      "raw_display": "mod.server.component.redStoneCompServer",
+      "normalized_name": "mod.server.component.redStoneCompServer"
+    },
+    {
+      "raw_display": "server.component.effectCompServer",
+      "normalized_name": "server.component.effectCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.NativeScreenManager",
+      "normalized_name": "mod.client.ui.NativeScreenManager"
+    },
+    {
+      "raw_display": "mod.server.component.rideCompServer",
+      "normalized_name": "mod.server.component.rideCompServer"
+    },
+    {
+      "raw_display": "server.component.engineCompFactoryServer",
+      "normalized_name": "server.component.engineCompFactoryServer"
+    },
+    {
+      "raw_display": "mod.client.ui.CustomUIControlProxy",
+      "normalized_name": "mod.client.ui.CustomUIControlProxy"
+    },
+    {
+      "raw_display": "mod.server.component.rotCompServer",
+      "normalized_name": "mod.server.component.rotCompServer"
+    },
+    {
+      "raw_display": "server.component.engineTypeCompServer",
+      "normalized_name": "server.component.engineTypeCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.CustomUIScreenProxy",
+      "normalized_name": "mod.client.ui.CustomUIScreenProxy"
+    },
+    {
+      "raw_display": "mod.server.component.scaleCompServer",
+      "normalized_name": "mod.server.component.scaleCompServer"
+    },
+    {
+      "raw_display": "server.component.entityComponentServer",
+      "normalized_name": "server.component.entityComponentServer"
+    },
+    {
+      "raw_display": "mod.client.ui.miniMapBaseScreen",
+      "normalized_name": "mod.client.ui.miniMapBaseScreen"
+    },
+    {
+      "raw_display": "mod.server.component.shareableCompServer",
+      "normalized_name": "mod.server.component.shareableCompServer"
+    },
+    {
+      "raw_display": "server.component.entityDefinitionsCompServer",
+      "normalized_name": "server.component.entityDefinitionsCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls",
+      "normalized_name": "mod.client.ui.controls"
+    },
+    {
+      "raw_display": "mod.server.component.tagCompServer",
+      "normalized_name": "mod.server.component.tagCompServer"
+    },
+    {
+      "raw_display": "server.component.entityEventCompServer",
+      "normalized_name": "server.component.entityEventCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.baseUIControl",
+      "normalized_name": "mod.client.ui.controls.baseUIControl"
+    },
+    {
+      "raw_display": "mod.server.component.tameCompServer",
+      "normalized_name": "mod.server.component.tameCompServer"
+    },
+    {
+      "raw_display": "server.component.exDataCompServer",
+      "normalized_name": "server.component.exDataCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.buttonUIControl",
+      "normalized_name": "mod.client.ui.controls.buttonUIControl"
+    },
+    {
+      "raw_display": "mod.server.component.timeCompServer",
+      "normalized_name": "mod.server.component.timeCompServer"
+    },
+    {
+      "raw_display": "server.component.expCompServer",
+      "normalized_name": "server.component.expCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.gridUIControl",
+      "normalized_name": "mod.client.ui.controls.gridUIControl"
+    },
+    {
+      "raw_display": "mod.server.component.weatherCompServer",
+      "normalized_name": "mod.server.component.weatherCompServer"
+    },
+    {
+      "raw_display": "server.component.explosionCompServer",
+      "normalized_name": "server.component.explosionCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.imageUIControl",
+      "normalized_name": "mod.client.ui.controls.imageUIControl"
+    },
+    {
+      "raw_display": "mod.common",
+      "normalized_name": "mod.common"
+    },
+    {
+      "raw_display": "server.component.featureCompServer",
+      "normalized_name": "server.component.featureCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.inputPanelUIControl",
+      "normalized_name": "mod.client.ui.controls.inputPanelUIControl"
+    },
+    {
+      "raw_display": "mod.common.mod",
+      "normalized_name": "mod.common.mod"
+    },
+    {
+      "raw_display": "server.component.flyCompServer",
+      "normalized_name": "server.component.flyCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.itemRendererUIControl",
+      "normalized_name": "mod.client.ui.controls.itemRendererUIControl"
+    },
+    {
+      "raw_display": "mod.common.minecraftEnum",
+      "normalized_name": "mod.common.minecraftEnum"
+    },
+    {
+      "raw_display": "server.component.gameCompServer",
+      "normalized_name": "server.component.gameCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.labelUIControl",
+      "normalized_name": "mod.client.ui.controls.labelUIControl"
+    },
+    {
+      "raw_display": "mod.common.EntityType",
+      "normalized_name": "mod.common.EntityType"
+    },
+    {
+      "raw_display": "server.component.gravityCompServer",
+      "normalized_name": "server.component.gravityCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.minimapUIControl",
+      "normalized_name": "mod.client.ui.controls.minimapUIControl"
+    },
+    {
+      "raw_display": "mod.common.EnchantType",
+      "normalized_name": "mod.common.EnchantType"
+    },
+    {
+      "raw_display": "server.component.httpToWebServerCompServer",
+      "normalized_name": "server.component.httpToWebServerCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.neteaseComboBoxUIControl",
+      "normalized_name": "mod.client.ui.controls.neteaseComboBoxUIControl"
+    },
+    {
+      "raw_display": "mod.common.ItemType",
+      "normalized_name": "mod.common.ItemType"
+    },
+    {
+      "raw_display": "server.component.hurtCompServer",
+      "normalized_name": "server.component.hurtCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.neteasePaperDollUIControl",
+      "normalized_name": "mod.client.ui.controls.neteasePaperDollUIControl"
+    },
+    {
+      "raw_display": "mod.common.BiomeType",
+      "normalized_name": "mod.common.BiomeType"
+    },
+    {
+      "raw_display": "server.component.interactCompServer",
+      "normalized_name": "server.component.interactCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.progressBarUIControl",
+      "normalized_name": "mod.client.ui.controls.progressBarUIControl"
+    },
+    {
+      "raw_display": "mod.common.SysSoundType",
+      "normalized_name": "mod.common.SysSoundType"
+    },
+    {
+      "raw_display": "server.component.itemBannedCompServer",
+      "normalized_name": "server.component.itemBannedCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.scrollViewUIControl",
+      "normalized_name": "mod.client.ui.controls.scrollViewUIControl"
+    },
+    {
+      "raw_display": "mod.common.BlockType",
+      "normalized_name": "mod.common.BlockType"
+    },
+    {
+      "raw_display": "server.component.itemCompServer",
+      "normalized_name": "server.component.itemCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.selectionWheelUIControl",
+      "normalized_name": "mod.client.ui.controls.selectionWheelUIControl"
+    },
+    {
+      "raw_display": "mod.common.EffectType",
+      "normalized_name": "mod.common.EffectType"
+    },
+    {
+      "raw_display": "server.component.levelCompServer",
+      "normalized_name": "server.component.levelCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.sliderUIControl",
+      "normalized_name": "mod.client.ui.controls.sliderUIControl"
+    },
+    {
+      "raw_display": "mod.common.KeyBoardType",
+      "normalized_name": "mod.common.KeyBoardType"
+    },
+    {
+      "raw_display": "server.component.lootCompServer",
+      "normalized_name": "server.component.lootCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.stackPanelUIControl",
+      "normalized_name": "mod.client.ui.controls.stackPanelUIControl"
+    },
+    {
+      "raw_display": "mod.common.utils",
+      "normalized_name": "mod.common.utils"
+    },
+    {
+      "raw_display": "server.component.mobSpawnCompServer",
+      "normalized_name": "server.component.mobSpawnCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.switchToggleUIControl",
+      "normalized_name": "mod.client.ui.controls.switchToggleUIControl"
+    },
+    {
+      "raw_display": "mod.common.utils.mcmath",
+      "normalized_name": "mod.common.utils.mcmath"
+    },
+    {
+      "raw_display": "server.component.modAttrCompServer",
+      "normalized_name": "server.component.modAttrCompServer"
+    },
+    {
+      "raw_display": "mod.client.ui.controls.textEditBoxUIControl",
+      "normalized_name": "mod.client.ui.controls.textEditBoxUIControl"
+    },
+    {
+      "raw_display": "mod.common.utils.colorUtil",
+      "normalized_name": "mod.common.utils.colorUtil"
+    },
+    {
+      "raw_display": "server.component.modelCompServer",
+      "normalized_name": "server.component.modelCompServer"
+    },
+    {
+      "raw_display": "mod.client.system",
+      "normalized_name": "mod.client.system"
+    },
+    {
+      "raw_display": "mod.common.utils.timer",
+      "normalized_name": "mod.common.utils.timer"
+    },
+    {
+      "raw_display": "server.component.moveToCompServer",
+      "normalized_name": "server.component.moveToCompServer"
+    },
+    {
+      "raw_display": "mod.client.system.clientSystem",
+      "normalized_name": "mod.client.system.clientSystem"
+    },
+    {
+      "raw_display": "mod.common.entity",
+      "normalized_name": "mod.common.entity"
+    },
+    {
+      "raw_display": "server.component.msgCompServer",
+      "normalized_name": "server.component.msgCompServer"
+    },
+    {
+      "raw_display": "mod.client.component",
+      "normalized_name": "mod.client.component"
+    },
+    {
+      "raw_display": "mod.common.entity.entityconst",
+      "normalized_name": "mod.common.entity.entityconst"
+    },
+    {
+      "raw_display": "server.component.nameCompServer",
+      "normalized_name": "server.component.nameCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.achievementCompClient",
+      "normalized_name": "mod.client.component.achievementCompClient"
+    },
+    {
+      "raw_display": "mod.common.component",
+      "normalized_name": "mod.common.component"
+    },
+    {
+      "raw_display": "server.component.persistenceCompServer",
+      "normalized_name": "server.component.persistenceCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.actionCompClient",
+      "normalized_name": "mod.client.component.actionCompClient"
+    },
+    {
+      "raw_display": "mod.common.component.baseComponent",
+      "normalized_name": "mod.common.component.baseComponent"
+    },
+    {
+      "raw_display": "server.component.petCompServer",
+      "normalized_name": "server.component.petCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.actorMotionCompClient",
+      "normalized_name": "mod.client.component.actorMotionCompClient"
+    },
+    {
+      "raw_display": "mod.common.component.blockPaletteComp",
+      "normalized_name": "mod.common.component.blockPaletteComp"
+    },
+    {
+      "raw_display": "server.component.playerCompServer",
+      "normalized_name": "server.component.playerCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.actorRenderCompClient",
+      "normalized_name": "mod.client.component.actorRenderCompClient"
+    },
+    {
+      "raw_display": "mod.common.system",
+      "normalized_name": "mod.common.system"
+    },
+    {
+      "raw_display": "server.component.portalCompServer",
+      "normalized_name": "server.component.portalCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.attrCompClient",
+      "normalized_name": "mod.client.component.attrCompClient"
+    },
+    {
+      "raw_display": "mod.common.system.baseSystem",
+      "normalized_name": "mod.common.system.baseSystem"
+    },
+    {
+      "raw_display": "server.component.posCompServer",
+      "normalized_name": "server.component.posCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.audioCustomCompClient",
+      "normalized_name": "mod.client.component.audioCustomCompClient"
+    },
+    {
+      "raw_display": "client",
+      "normalized_name": "client"
+    },
+    {
+      "raw_display": "server.component.projectileCompServer",
+      "normalized_name": "server.component.projectileCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.auxValueCompClient",
+      "normalized_name": "mod.client.component.auxValueCompClient"
+    },
+    {
+      "raw_display": "client.extraClientApi",
+      "normalized_name": "client.extraClientApi"
+    },
+    {
+      "raw_display": "server.component.recipeCompServer",
+      "normalized_name": "server.component.recipeCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.biomeCompClient",
+      "normalized_name": "mod.client.component.biomeCompClient"
+    },
+    {
+      "raw_display": "client.clientEvent",
+      "normalized_name": "client.clientEvent"
+    },
+    {
+      "raw_display": "server.component.redStoneCompServer",
+      "normalized_name": "server.component.redStoneCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.blockCompClient",
+      "normalized_name": "mod.client.component.blockCompClient"
+    },
+    {
+      "raw_display": "client.ui",
+      "normalized_name": "client.ui"
+    },
+    {
+      "raw_display": "server.component.rideCompServer",
+      "normalized_name": "server.component.rideCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.blockGeometryCompClient",
+      "normalized_name": "mod.client.component.blockGeometryCompClient"
+    },
+    {
+      "raw_display": "client.ui.screenNode",
+      "normalized_name": "client.ui.screenNode"
+    },
+    {
+      "raw_display": "server.component.rotCompServer",
+      "normalized_name": "server.component.rotCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.blockInfoCompClient",
+      "normalized_name": "mod.client.component.blockInfoCompClient"
+    },
+    {
+      "raw_display": "client.ui.screenController",
+      "normalized_name": "client.ui.screenController"
+    },
+    {
+      "raw_display": "server.component.scaleCompServer",
+      "normalized_name": "server.component.scaleCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.blockUseEventWhiteListCompClient",
+      "normalized_name": "mod.client.component.blockUseEventWhiteListCompClient"
+    },
+    {
+      "raw_display": "client.ui.viewBinder",
+      "normalized_name": "client.ui.viewBinder"
+    },
+    {
+      "raw_display": "server.component.shareableCompServer",
+      "normalized_name": "server.component.shareableCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.brightnessCompClient",
+      "normalized_name": "mod.client.component.brightnessCompClient"
+    },
+    {
+      "raw_display": "client.ui.viewRequest",
+      "normalized_name": "client.ui.viewRequest"
+    },
+    {
+      "raw_display": "server.component.tagCompServer",
+      "normalized_name": "server.component.tagCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.cameraCompClient",
+      "normalized_name": "mod.client.component.cameraCompClient"
+    },
+    {
+      "raw_display": "client.ui.NativeScreenManager",
+      "normalized_name": "client.ui.NativeScreenManager"
+    },
+    {
+      "raw_display": "server.component.tameCompServer",
+      "normalized_name": "server.component.tameCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.chunkSourceCompClient",
+      "normalized_name": "mod.client.component.chunkSourceCompClient"
+    },
+    {
+      "raw_display": "client.ui.controls",
+      "normalized_name": "client.ui.controls"
+    },
+    {
+      "raw_display": "server.component.timeCompServer",
+      "normalized_name": "server.component.timeCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.collisionBoxCompClient",
+      "normalized_name": "mod.client.component.collisionBoxCompClient"
+    },
+    {
+      "raw_display": "client.ui.controls.baseUIControl",
+      "normalized_name": "client.ui.controls.baseUIControl"
+    },
+    {
+      "raw_display": "server.component.weatherCompServer",
+      "normalized_name": "server.component.weatherCompServer"
+    },
+    {
+      "raw_display": "mod.client.component.configCompClient",
+      "normalized_name": "mod.client.component.configCompClient"
+    },
+    {
+      "raw_display": "client.ui.controls.buttonUIControl",
+      "normalized_name": "client.ui.controls.buttonUIControl"
+    },
+    {
+      "raw_display": "common",
+      "normalized_name": "common"
+    },
+    {
+      "raw_display": "mod.client.component.deviceCompClient",
+      "normalized_name": "mod.client.component.deviceCompClient"
+    },
+    {
+      "raw_display": "client.ui.controls.gridUIControl",
+      "normalized_name": "client.ui.controls.gridUIControl"
+    },
+    {
+      "raw_display": "common.mod",
+      "normalized_name": "common.mod"
+    },
+    {
+      "raw_display": "mod.client.component.effectCompClient",
+      "normalized_name": "mod.client.component.effectCompClient"
+    },
+    {
+      "raw_display": "client.ui.controls.imageUIControl",
+      "normalized_name": "client.ui.controls.imageUIControl"
+    },
+    {
+      "raw_display": "common.minecraftEnum",
+      "normalized_name": "common.minecraftEnum"
+    },
+    {
+      "raw_display": "mod.client.component.engineCompFactoryClient",
+      "normalized_name": "mod.client.component.engineCompFactoryClient"
+    },
+    {
+      "raw_display": "client.ui.controls.inputPanelUIControl",
+      "normalized_name": "client.ui.controls.inputPanelUIControl"
+    },
+    {
+      "raw_display": "common.EntityType",
+      "normalized_name": "common.EntityType"
+    },
+    {
+      "raw_display": "mod.client.component.engineEffectBindControlComp",
+      "normalized_name": "mod.client.component.engineEffectBindControlComp"
+    },
+    {
+      "raw_display": "client.ui.controls.itemRendererUIControl",
+      "normalized_name": "client.ui.controls.itemRendererUIControl"
+    },
+    {
+      "raw_display": "common.EnchantType",
+      "normalized_name": "common.EnchantType"
+    },
+    {
+      "raw_display": "mod.client.component.engineTypeCompClient",
+      "normalized_name": "mod.client.component.engineTypeCompClient"
+    },
+    {
+      "raw_display": "client.ui.controls.labelUIControl",
+      "normalized_name": "client.ui.controls.labelUIControl"
+    },
+    {
+      "raw_display": "common.ItemType",
+      "normalized_name": "common.ItemType"
+    },
+    {
+      "raw_display": "mod.client.component.fogCompClient",
+      "normalized_name": "mod.client.component.fogCompClient"
+    },
+    {
+      "raw_display": "client.ui.controls.minimapUIControl",
+      "normalized_name": "client.ui.controls.minimapUIControl"
+    },
+    {
+      "raw_display": "common.BiomeType",
+      "normalized_name": "common.BiomeType"
+    },
+    {
+      "raw_display": "mod.client.component.frameAniControlComp",
+      "normalized_name": "mod.client.component.frameAniControlComp"
+    },
+    {
+      "raw_display": "client.ui.controls.neteaseComboBoxUIControl",
+      "normalized_name": "client.ui.controls.neteaseComboBoxUIControl"
+    },
+    {
+      "raw_display": "common.SysSoundType",
+      "normalized_name": "common.SysSoundType"
+    },
+    {
+      "raw_display": "mod.client.component.frameAniEntityBindComp",
+      "normalized_name": "mod.client.component.frameAniEntityBindComp"
+    },
+    {
+      "raw_display": "client.ui.controls.neteasePaperDollUIControl",
+      "normalized_name": "client.ui.controls.neteasePaperDollUIControl"
+    },
+    {
+      "raw_display": "common.BlockType",
+      "normalized_name": "common.BlockType"
+    },
+    {
+      "raw_display": "mod.client.component.frameAniSkeletonBindComp",
+      "normalized_name": "mod.client.component.frameAniSkeletonBindComp"
+    },
+    {
+      "raw_display": "client.ui.controls.progressBarUIControl",
+      "normalized_name": "client.ui.controls.progressBarUIControl"
+    },
+    {
+      "raw_display": "common.EffectType",
+      "normalized_name": "common.EffectType"
+    },
+    {
+      "raw_display": "mod.client.component.frameAniTransComp",
+      "normalized_name": "mod.client.component.frameAniTransComp"
+    },
+    {
+      "raw_display": "client.ui.controls.scrollViewUIControl",
+      "normalized_name": "client.ui.controls.scrollViewUIControl"
+    },
+    {
+      "raw_display": "common.KeyBoardType",
+      "normalized_name": "common.KeyBoardType"
+    },
+    {
+      "raw_display": "mod.client.component.gameCompClient",
+      "normalized_name": "mod.client.component.gameCompClient"
+    },
+    {
+      "raw_display": "client.ui.controls.selectionWheelUIControl",
+      "normalized_name": "client.ui.controls.selectionWheelUIControl"
+    },
+    {
+      "raw_display": "common.utils",
+      "normalized_name": "common.utils"
+    },
+    {
+      "raw_display": "mod.client.component.healthCompClient",
+      "normalized_name": "mod.client.component.healthCompClient"
+    },
+    {
+      "raw_display": "client.ui.controls.sliderUIControl",
+      "normalized_name": "client.ui.controls.sliderUIControl"
+    },
+    {
+      "raw_display": "common.utils.mcmath",
+      "normalized_name": "common.utils.mcmath"
+    },
+    {
+      "raw_display": "mod.client.component.itemCompClient",
+      "normalized_name": "mod.client.component.itemCompClient"
+    },
+    {
+      "raw_display": "client.ui.controls.stackPanelUIControl",
+      "normalized_name": "client.ui.controls.stackPanelUIControl"
+    },
+    {
+      "raw_display": "common.utils.colorUtil",
+      "normalized_name": "common.utils.colorUtil"
+    },
+    {
+      "raw_display": "mod.client.component.modAttrCompClient",
+      "normalized_name": "mod.client.component.modAttrCompClient"
+    },
+    {
+      "raw_display": "client.ui.controls.switchToggleUIControl",
+      "normalized_name": "client.ui.controls.switchToggleUIControl"
+    },
+    {
+      "raw_display": "common.utils.timer",
+      "normalized_name": "common.utils.timer"
+    },
+    {
+      "raw_display": "mod.client.component.modelCompClient",
+      "normalized_name": "mod.client.component.modelCompClient"
+    },
+    {
+      "raw_display": "client.ui.controls.textEditBoxUIControl",
+      "normalized_name": "client.ui.controls.textEditBoxUIControl"
+    },
+    {
+      "raw_display": "common.entity",
+      "normalized_name": "common.entity"
+    },
+    {
+      "raw_display": "mod.client.component.nameCompClient",
+      "normalized_name": "mod.client.component.nameCompClient"
+    },
+    {
+      "raw_display": "client.system",
+      "normalized_name": "client.system"
+    },
+    {
+      "raw_display": "common.entity.entityconst",
+      "normalized_name": "common.entity.entityconst"
+    },
+    {
+      "raw_display": "mod.client.component.neteaseShopCompClient",
+      "normalized_name": "mod.client.component.neteaseShopCompClient"
+    },
+    {
+      "raw_display": "client.system.clientSystem",
+      "normalized_name": "client.system.clientSystem"
+    },
+    {
+      "raw_display": "common.component",
+      "normalized_name": "common.component"
+    },
+    {
+      "raw_display": "mod.client.component.operationCompClient",
+      "normalized_name": "mod.client.component.operationCompClient"
+    },
+    {
+      "raw_display": "client.component",
+      "normalized_name": "client.component"
+    },
+    {
+      "raw_display": "common.component.baseComponent",
+      "normalized_name": "common.component.baseComponent"
+    },
+    {
+      "raw_display": "mod.client.component.particleControlComp",
+      "normalized_name": "mod.client.component.particleControlComp"
+    },
+    {
+      "raw_display": "client.component.achievementCompClient",
+      "normalized_name": "client.component.achievementCompClient"
+    },
+    {
+      "raw_display": "common.component.blockPaletteComp",
+      "normalized_name": "common.component.blockPaletteComp"
+    },
+    {
+      "raw_display": "mod.client.component.particleEntityBindComp",
+      "normalized_name": "mod.client.component.particleEntityBindComp"
+    },
+    {
+      "raw_display": "client.component.actionCompClient",
+      "normalized_name": "client.component.actionCompClient"
+    },
+    {
+      "raw_display": "common.system",
+      "normalized_name": "common.system"
+    },
+    {
+      "raw_display": "mod.client.component.particleSkeletonBindComp",
+      "normalized_name": "mod.client.component.particleSkeletonBindComp"
+    },
+    {
+      "raw_display": "client.component.actorMotionCompClient",
+      "normalized_name": "client.component.actorMotionCompClient"
+    },
+    {
+      "raw_display": "common.system.baseSystem",
+      "normalized_name": "common.system.baseSystem"
+    },
+    {
+      "raw_display": "mod.client.component.particleSystemCompClient",
+      "normalized_name": "mod.client.component.particleSystemCompClient"
+    },
+    {
+      "raw_display": "client.component.actorRenderCompClient",
+      "normalized_name": "client.component.actorRenderCompClient"
+    },
+    {
+      "raw_display": "Preset",
+      "normalized_name": "Preset"
+    },
+    {
+      "raw_display": "mod.client.component.particleTransComp",
+      "normalized_name": "mod.client.component.particleTransComp"
+    },
+    {
+      "raw_display": "client.component.attrCompClient",
+      "normalized_name": "client.component.attrCompClient"
+    },
+    {
+      "raw_display": "Preset.Parts",
+      "normalized_name": "Preset.Parts"
+    },
+    {
+      "raw_display": "mod.client.component.playerAnimCompClient",
+      "normalized_name": "mod.client.component.playerAnimCompClient"
+    },
+    {
+      "raw_display": "client.component.audioCustomCompClient",
+      "normalized_name": "client.component.audioCustomCompClient"
+    },
+    {
+      "raw_display": "Preset.Parts.WorldPart",
+      "normalized_name": "Preset.Parts.WorldPart"
+    },
+    {
+      "raw_display": "mod.client.component.playerCompClient",
+      "normalized_name": "mod.client.component.playerCompClient"
+    },
+    {
+      "raw_display": "client.component.auxValueCompClient",
+      "normalized_name": "client.component.auxValueCompClient"
+    },
+    {
+      "raw_display": "Preset.Parts.TriggerPart",
+      "normalized_name": "Preset.Parts.TriggerPart"
+    },
+    {
+      "raw_display": "mod.client.component.playerViewCompClient",
+      "normalized_name": "mod.client.component.playerViewCompClient"
+    },
+    {
+      "raw_display": "client.component.biomeCompClient",
+      "normalized_name": "client.component.biomeCompClient"
+    },
+    {
+      "raw_display": "Preset.Parts.PostprocessPart",
+      "normalized_name": "Preset.Parts.PostprocessPart"
+    },
+    {
+      "raw_display": "mod.client.component.posCompClient",
+      "normalized_name": "mod.client.component.posCompClient"
+    },
+    {
+      "raw_display": "client.component.blockCompClient",
+      "normalized_name": "client.component.blockCompClient"
+    },
+    {
+      "raw_display": "Preset.Parts.PortalPart",
+      "normalized_name": "Preset.Parts.PortalPart"
+    },
+    {
+      "raw_display": "mod.client.component.postProcessControlComp",
+      "normalized_name": "mod.client.component.postProcessControlComp"
+    },
+    {
+      "raw_display": "client.component.blockGeometryCompClient",
+      "normalized_name": "client.component.blockGeometryCompClient"
+    },
+    {
+      "raw_display": "Preset.Parts.PlayerBasicPart",
+      "normalized_name": "Preset.Parts.PlayerBasicPart"
+    },
+    {
+      "raw_display": "mod.client.component.queryVariableCompClient",
+      "normalized_name": "mod.client.component.queryVariableCompClient"
+    },
+    {
+      "raw_display": "client.component.blockInfoCompClient",
+      "normalized_name": "client.component.blockInfoCompClient"
+    },
+    {
+      "raw_display": "Preset.Parts.EntityBasePart",
+      "normalized_name": "Preset.Parts.EntityBasePart"
+    },
+    {
+      "raw_display": "mod.client.component.recipeCompClient",
+      "normalized_name": "mod.client.component.recipeCompClient"
+    },
+    {
+      "raw_display": "client.component.blockUseEventWhiteListCompClient",
+      "normalized_name": "client.component.blockUseEventWhiteListCompClient"
+    },
+    {
+      "raw_display": "Preset.Parts.CameraTrackPart",
+      "normalized_name": "Preset.Parts.CameraTrackPart"
+    },
+    {
+      "raw_display": "mod.client.component.rideCompClient",
+      "normalized_name": "mod.client.component.rideCompClient"
+    },
+    {
+      "raw_display": "client.component.brightnessCompClient",
+      "normalized_name": "client.component.brightnessCompClient"
+    },
+    {
+      "raw_display": "Preset.Parts.NavPointsPart",
+      "normalized_name": "Preset.Parts.NavPointsPart"
+    },
+    {
+      "raw_display": "mod.client.component.rotCompClient",
+      "normalized_name": "mod.client.component.rotCompClient"
+    },
+    {
+      "raw_display": "client.component.cameraCompClient",
+      "normalized_name": "client.component.cameraCompClient"
+    },
+    {
+      "raw_display": "Preset.Model",
+      "normalized_name": "Preset.Model"
+    },
+    {
+      "raw_display": "mod.client.component.skyRenderCompClient",
+      "normalized_name": "mod.client.component.skyRenderCompClient"
+    },
+    {
+      "raw_display": "client.component.chunkSourceCompClient",
+      "normalized_name": "client.component.chunkSourceCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.BoxData",
+      "normalized_name": "Preset.Model.BoxData"
+    },
+    {
+      "raw_display": "mod.client.component.tameCompClient",
+      "normalized_name": "mod.client.component.tameCompClient"
+    },
+    {
+      "raw_display": "client.component.collisionBoxCompClient",
+      "normalized_name": "client.component.collisionBoxCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.PresetBase",
+      "normalized_name": "Preset.Model.PresetBase"
+    },
+    {
+      "raw_display": "mod.client.component.textBoardCompClient",
+      "normalized_name": "mod.client.component.textBoardCompClient"
+    },
+    {
+      "raw_display": "client.component.configCompClient",
+      "normalized_name": "client.component.configCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.TransformObject",
+      "normalized_name": "Preset.Model.TransformObject"
+    },
+    {
+      "raw_display": "mod.client.component.textNotifyCompClient",
+      "normalized_name": "mod.client.component.textNotifyCompClient"
+    },
+    {
+      "raw_display": "client.component.deviceCompClient",
+      "normalized_name": "client.component.deviceCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.Transform",
+      "normalized_name": "Preset.Model.Transform"
+    },
+    {
+      "raw_display": "mod.client.component.timeCompClient",
+      "normalized_name": "mod.client.component.timeCompClient"
+    },
+    {
+      "raw_display": "client.component.effectCompClient",
+      "normalized_name": "client.component.effectCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.SdkInterface",
+      "normalized_name": "Preset.Model.SdkInterface"
+    },
+    {
+      "raw_display": "mod.client.component.virtualWorldCompClient",
+      "normalized_name": "mod.client.component.virtualWorldCompClient"
+    },
+    {
+      "raw_display": "client.component.engineCompFactoryClient",
+      "normalized_name": "client.component.engineCompFactoryClient"
+    },
+    {
+      "raw_display": "Preset.Model.PartBase",
+      "normalized_name": "Preset.Model.PartBase"
+    },
+    {
+      "raw_display": "mod.server",
+      "normalized_name": "mod.server"
+    },
+    {
+      "raw_display": "client.component.engineEffectBindControlComp",
+      "normalized_name": "client.component.engineEffectBindControlComp"
+    },
+    {
+      "raw_display": "Preset.Model.GameObject",
+      "normalized_name": "Preset.Model.GameObject"
+    },
+    {
+      "raw_display": "mod.server.extraServerApi",
+      "normalized_name": "mod.server.extraServerApi"
+    },
+    {
+      "raw_display": "client.component.engineTypeCompClient",
+      "normalized_name": "client.component.engineTypeCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.Entity",
+      "normalized_name": "Preset.Model.Entity"
+    },
+    {
+      "raw_display": "mod.server.serverEvent",
+      "normalized_name": "mod.server.serverEvent"
+    },
+    {
+      "raw_display": "client.component.fogCompClient",
+      "normalized_name": "client.component.fogCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.Entity.EntityPreset",
+      "normalized_name": "Preset.Model.Entity.EntityPreset"
+    },
+    {
+      "raw_display": "mod.server.blockEntityData",
+      "normalized_name": "mod.server.blockEntityData"
+    },
+    {
+      "raw_display": "client.component.frameAniControlComp",
+      "normalized_name": "client.component.frameAniControlComp"
+    },
+    {
+      "raw_display": "Preset.Model.Entity.EntityObject",
+      "normalized_name": "Preset.Model.Entity.EntityObject"
+    },
+    {
+      "raw_display": "mod.server.gamePlay",
+      "normalized_name": "mod.server.gamePlay"
+    },
+    {
+      "raw_display": "client.component.frameAniEntityBindComp",
+      "normalized_name": "client.component.frameAniEntityBindComp"
+    },
+    {
+      "raw_display": "Preset.Model.Player",
+      "normalized_name": "Preset.Model.Player"
+    },
+    {
+      "raw_display": "mod.server.gamePlay.AI",
+      "normalized_name": "mod.server.gamePlay.AI"
+    },
+    {
+      "raw_display": "client.component.frameAniSkeletonBindComp",
+      "normalized_name": "client.component.frameAniSkeletonBindComp"
+    },
+    {
+      "raw_display": "Preset.Model.Player.PlayerObject",
+      "normalized_name": "Preset.Model.Player.PlayerObject"
+    },
+    {
+      "raw_display": "mod.server.gamePlay.AI.customGoal",
+      "normalized_name": "mod.server.gamePlay.AI.customGoal"
+    },
+    {
+      "raw_display": "client.component.frameAniTransComp",
+      "normalized_name": "client.component.frameAniTransComp"
+    },
+    {
+      "raw_display": "Preset.Model.Player.PlayerPreset",
+      "normalized_name": "Preset.Model.Player.PlayerPreset"
+    },
+    {
+      "raw_display": "mod.server.system",
+      "normalized_name": "mod.server.system"
+    },
+    {
+      "raw_display": "client.component.gameCompClient",
+      "normalized_name": "client.component.gameCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.Block",
+      "normalized_name": "Preset.Model.Block"
+    },
+    {
+      "raw_display": "mod.server.system.serverSystem",
+      "normalized_name": "mod.server.system.serverSystem"
+    },
+    {
+      "raw_display": "client.component.healthCompClient",
+      "normalized_name": "client.component.healthCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.Block.BlockPreset",
+      "normalized_name": "Preset.Model.Block.BlockPreset"
+    },
+    {
+      "raw_display": "mod.server.component",
+      "normalized_name": "mod.server.component"
+    },
+    {
+      "raw_display": "client.component.itemCompClient",
+      "normalized_name": "client.component.itemCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.Blueprint",
+      "normalized_name": "Preset.Model.Blueprint"
+    },
+    {
+      "raw_display": "mod.server.component.achievementCompServer",
+      "normalized_name": "mod.server.component.achievementCompServer"
+    },
+    {
+      "raw_display": "client.component.modAttrCompClient",
+      "normalized_name": "client.component.modAttrCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.Blueprint.BaseUIBlueprintScreen",
+      "normalized_name": "Preset.Model.Blueprint.BaseUIBlueprintScreen"
+    },
+    {
+      "raw_display": "mod.server.component.actionCompServer",
+      "normalized_name": "mod.server.component.actionCompServer"
+    },
+    {
+      "raw_display": "client.component.modelCompClient",
+      "normalized_name": "client.component.modelCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.Blueprint.BaseUIBlueprintPart",
+      "normalized_name": "Preset.Model.Blueprint.BaseUIBlueprintPart"
+    },
+    {
+      "raw_display": "mod.server.component.actorCollidableCompServer",
+      "normalized_name": "mod.server.component.actorCollidableCompServer"
+    },
+    {
+      "raw_display": "client.component.nameCompClient",
+      "normalized_name": "client.component.nameCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.Effect",
+      "normalized_name": "Preset.Model.Effect"
+    },
+    {
+      "raw_display": "mod.server.component.actorLootCompServer",
+      "normalized_name": "mod.server.component.actorLootCompServer"
+    },
+    {
+      "raw_display": "client.component.neteaseShopCompClient",
+      "normalized_name": "client.component.neteaseShopCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.Effect.EffectObject",
+      "normalized_name": "Preset.Model.Effect.EffectObject"
+    },
+    {
+      "raw_display": "mod.server.component.actorMotionCompServer",
+      "normalized_name": "mod.server.component.actorMotionCompServer"
+    },
+    {
+      "raw_display": "client.component.operationCompClient",
+      "normalized_name": "client.component.operationCompClient"
+    },
+    {
+      "raw_display": "Preset.Model.Effect.EffectPreset",
+      "normalized_name": "Preset.Model.Effect.EffectPreset"
+    },
+    {
+      "raw_display": "mod.server.component.actorOwnerCompServer",
+      "normalized_name": "mod.server.component.actorOwnerCompServer"
+    },
+    {
+      "raw_display": "client.component.particleControlComp",
+      "normalized_name": "client.component.particleControlComp"
+    },
+    {
+      "raw_display": "Preset.Model.Textboard",
+      "normalized_name": "Preset.Model.Textboard"
+    },
+    {
+      "raw_display": "ast（3.3新增）",
+      "normalized_name": "ast"
+    },
+    {
+      "raw_display": "client.component.particleEntityBindComp",
+      "normalized_name": "client.component.particleEntityBindComp"
+    },
+    {
+      "raw_display": "Preset.Model.Textboard.TextboardObject",
+      "normalized_name": "Preset.Model.Textboard.TextboardObject"
+    },
+    {
+      "raw_display": "client.component.particleSkeletonBindComp",
+      "normalized_name": "client.component.particleSkeletonBindComp"
+    },
+    {
+      "raw_display": "Preset.Model.Textboard.TextboardPreset",
+      "normalized_name": "Preset.Model.Textboard.TextboardPreset"
+    },
+    {
+      "raw_display": "Preset.Model.UI",
+      "normalized_name": "Preset.Model.UI"
+    },
+    {
+      "raw_display": "Preset.Model.UI.UIPreset",
+      "normalized_name": "Preset.Model.UI.UIPreset"
+    },
+    {
+      "raw_display": "Preset.Controller",
+      "normalized_name": "Preset.Controller"
+    },
+    {
+      "raw_display": "Preset.Controller.PresetApi",
+      "normalized_name": "Preset.Controller.PresetApi"
+    }
+  ],
+  "modules": [
+    "__future__",
+    "mod.server.component.actorPushableCompServer",
+    "client.component.particleSystemCompClient",
+    "_md5",
+    "mod.server.component.aiCommandCompServer",
+    "client.component.particleTransComp",
+    "_random",
+    "mod.server.component.attrCompServer",
+    "client.component.playerAnimCompClient",
+    "logging",
+    "mod.server.component.auxValueCompServer",
+    "client.component.playerCompClient",
+    "mod_log",
+    "mod.server.component.biomeCompServer",
+    "client.component.playerViewCompClient",
+    "traceback",
+    "mod.server.component.blockCompServer",
+    "client.component.posCompClient",
+    "random",
+    "mod.server.component.blockEntityExDataCompServer",
+    "client.component.postProcessControlComp",
+    "json",
+    "mod.server.component.blockInfoCompServer",
+    "client.component.queryVariableCompClient",
+    "math",
+    "mod.server.component.blockStateCompServer",
+    "client.component.recipeCompClient",
+    "time",
+    "mod.server.component.blockUseEventWhiteListCompServer",
+    "client.component.rideCompClient",
+    "copy",
+    "mod.server.component.breathCompServer",
+    "client.component.rotCompClient",
+    "base64",
+    "mod.server.component.bulletAttributesCompServer",
+    "client.component.skyRenderCompClient",
+    "bisect",
+    "mod.server.component.chatExtensionCompServer",
+    "client.component.tameCompClient",
+    "calendar",
+    "mod.server.component.chestContainerCompServer",
+    "client.component.textBoardCompClient",
+    "datetime",
+    "mod.server.component.chunkSourceComp",
+    "client.component.textNotifyCompClient",
+    "re",
+    "mod.server.component.collisionBoxCompServer",
+    "client.component.timeCompClient",
+    "Queue",
+    "mod.server.component.commandCompServer",
+    "client.component.virtualWorldCompClient",
+    "string",
+    "mod.server.component.controlAiCompServer",
+    "server",
+    "struct",
+    "mod.server.component.dimensionCompServer",
+    "server.extraServerApi",
+    "types",
+    "mod.server.component.effectCompServer",
+    "server.serverEvent",
+    "weakref",
+    "mod.server.component.engineCompFactoryServer",
+    "server.blockEntityData",
+    "itertools",
+    "mod.server.component.engineTypeCompServer",
+    "server.gamePlay",
+    "fnmatch",
+    "mod.server.component.entityComponentServer",
+    "server.gamePlay.AI",
+    "posixpath",
+    "mod.server.component.entityDefinitionsCompServer",
+    "server.gamePlay.AI.customGoal",
+    "keyword",
+    "mod.server.component.entityEventCompServer",
+    "server.system",
+    "hashlib",
+    "mod.server.component.exDataCompServer",
+    "server.system.serverSystem",
+    "zlib",
+    "mod.server.component.expCompServer",
+    "server.component",
+    "heapq",
+    "mod.server.component.explosionCompServer",
+    "server.component.achievementCompServer",
+    "abc",
+    "mod.server.component.featureCompServer",
+    "server.component.actionCompServer",
+    "uuid",
+    "mod.server.component.flyCompServer",
+    "server.component.actorCollidableCompServer",
+    "functools",
+    "mod.server.component.gameCompServer",
+    "server.component.actorLootCompServer",
+    "collections",
+    "mod.server.component.gravityCompServer",
+    "server.component.actorMotionCompServer",
+    "warnings",
+    "mod.server.component.httpToWebServerCompServer",
+    "server.component.actorOwnerCompServer",
+    "io",
+    "mod.server.component.hurtCompServer",
+    "server.component.actorPushableCompServer",
+    "gzip",
+    "mod.server.component.interactCompServer",
+    "server.component.aiCommandCompServer",
+    "singleton",
+    "mod.server.component.itemBannedCompServer",
+    "server.component.attrCompServer",
+    "threading",
+    "mod.server.component.itemCompServer",
+    "server.component.auxValueCompServer",
+    "binascii",
+    "mod.server.component.levelCompServer",
+    "server.component.biomeCompServer",
+    "cStringIO",
+    "mod.server.component.lootCompServer",
+    "server.component.blockCompServer",
+    "contextlib",
+    "mod.server.component.mobSpawnCompServer",
+    "server.component.blockEntityExDataCompServer",
+    "builtin_modules._inspect",
+    "mod.server.component.modAttrCompServer",
+    "server.component.blockInfoCompServer",
+    "builtin_modules._operator",
+    "mod.server.component.modelCompServer",
+    "server.component.blockStateCompServer",
+    "mod.builtin_modules._inspect",
+    "mod.server.component.moveToCompServer",
+    "server.component.blockUseEventWhiteListCompServer",
+    "mod.builtin_modules._operator",
+    "mod.server.component.msgCompServer",
+    "server.component.breathCompServer",
+    "mod",
+    "mod.server.component.nameCompServer",
+    "server.component.bulletAttributesCompServer",
+    "mod.client",
+    "mod.server.component.persistenceCompServer",
+    "server.component.chatExtensionCompServer",
+    "mod.client.extraClientApi",
+    "mod.server.component.petCompServer",
+    "server.component.chestContainerCompServer",
+    "mod.client.clientEvent",
+    "mod.server.component.playerCompServer",
+    "server.component.chunkSourceComp",
+    "mod.client.ui",
+    "mod.server.component.portalCompServer",
+    "server.component.collisionBoxCompServer",
+    "mod.client.ui.screenNode",
+    "mod.server.component.posCompServer",
+    "server.component.commandCompServer",
+    "mod.client.ui.screenController",
+    "mod.server.component.projectileCompServer",
+    "server.component.controlAiCompServer",
+    "mod.client.ui.viewBinder",
+    "mod.server.component.recipeCompServer",
+    "server.component.dimensionCompServer",
+    "mod.client.ui.viewRequest",
+    "mod.server.component.redStoneCompServer",
+    "server.component.effectCompServer",
+    "mod.client.ui.NativeScreenManager",
+    "mod.server.component.rideCompServer",
+    "server.component.engineCompFactoryServer",
+    "mod.client.ui.CustomUIControlProxy",
+    "mod.server.component.rotCompServer",
+    "server.component.engineTypeCompServer",
+    "mod.client.ui.CustomUIScreenProxy",
+    "mod.server.component.scaleCompServer",
+    "server.component.entityComponentServer",
+    "mod.client.ui.miniMapBaseScreen",
+    "mod.server.component.shareableCompServer",
+    "server.component.entityDefinitionsCompServer",
+    "mod.client.ui.controls",
+    "mod.server.component.tagCompServer",
+    "server.component.entityEventCompServer",
+    "mod.client.ui.controls.baseUIControl",
+    "mod.server.component.tameCompServer",
+    "server.component.exDataCompServer",
+    "mod.client.ui.controls.buttonUIControl",
+    "mod.server.component.timeCompServer",
+    "server.component.expCompServer",
+    "mod.client.ui.controls.gridUIControl",
+    "mod.server.component.weatherCompServer",
+    "server.component.explosionCompServer",
+    "mod.client.ui.controls.imageUIControl",
+    "mod.common",
+    "server.component.featureCompServer",
+    "mod.client.ui.controls.inputPanelUIControl",
+    "mod.common.mod",
+    "server.component.flyCompServer",
+    "mod.client.ui.controls.itemRendererUIControl",
+    "mod.common.minecraftEnum",
+    "server.component.gameCompServer",
+    "mod.client.ui.controls.labelUIControl",
+    "mod.common.EntityType",
+    "server.component.gravityCompServer",
+    "mod.client.ui.controls.minimapUIControl",
+    "mod.common.EnchantType",
+    "server.component.httpToWebServerCompServer",
+    "mod.client.ui.controls.neteaseComboBoxUIControl",
+    "mod.common.ItemType",
+    "server.component.hurtCompServer",
+    "mod.client.ui.controls.neteasePaperDollUIControl",
+    "mod.common.BiomeType",
+    "server.component.interactCompServer",
+    "mod.client.ui.controls.progressBarUIControl",
+    "mod.common.SysSoundType",
+    "server.component.itemBannedCompServer",
+    "mod.client.ui.controls.scrollViewUIControl",
+    "mod.common.BlockType",
+    "server.component.itemCompServer",
+    "mod.client.ui.controls.selectionWheelUIControl",
+    "mod.common.EffectType",
+    "server.component.levelCompServer",
+    "mod.client.ui.controls.sliderUIControl",
+    "mod.common.KeyBoardType",
+    "server.component.lootCompServer",
+    "mod.client.ui.controls.stackPanelUIControl",
+    "mod.common.utils",
+    "server.component.mobSpawnCompServer",
+    "mod.client.ui.controls.switchToggleUIControl",
+    "mod.common.utils.mcmath",
+    "server.component.modAttrCompServer",
+    "mod.client.ui.controls.textEditBoxUIControl",
+    "mod.common.utils.colorUtil",
+    "server.component.modelCompServer",
+    "mod.client.system",
+    "mod.common.utils.timer",
+    "server.component.moveToCompServer",
+    "mod.client.system.clientSystem",
+    "mod.common.entity",
+    "server.component.msgCompServer",
+    "mod.client.component",
+    "mod.common.entity.entityconst",
+    "server.component.nameCompServer",
+    "mod.client.component.achievementCompClient",
+    "mod.common.component",
+    "server.component.persistenceCompServer",
+    "mod.client.component.actionCompClient",
+    "mod.common.component.baseComponent",
+    "server.component.petCompServer",
+    "mod.client.component.actorMotionCompClient",
+    "mod.common.component.blockPaletteComp",
+    "server.component.playerCompServer",
+    "mod.client.component.actorRenderCompClient",
+    "mod.common.system",
+    "server.component.portalCompServer",
+    "mod.client.component.attrCompClient",
+    "mod.common.system.baseSystem",
+    "server.component.posCompServer",
+    "mod.client.component.audioCustomCompClient",
+    "client",
+    "server.component.projectileCompServer",
+    "mod.client.component.auxValueCompClient",
+    "client.extraClientApi",
+    "server.component.recipeCompServer",
+    "mod.client.component.biomeCompClient",
+    "client.clientEvent",
+    "server.component.redStoneCompServer",
+    "mod.client.component.blockCompClient",
+    "client.ui",
+    "server.component.rideCompServer",
+    "mod.client.component.blockGeometryCompClient",
+    "client.ui.screenNode",
+    "server.component.rotCompServer",
+    "mod.client.component.blockInfoCompClient",
+    "client.ui.screenController",
+    "server.component.scaleCompServer",
+    "mod.client.component.blockUseEventWhiteListCompClient",
+    "client.ui.viewBinder",
+    "server.component.shareableCompServer",
+    "mod.client.component.brightnessCompClient",
+    "client.ui.viewRequest",
+    "server.component.tagCompServer",
+    "mod.client.component.cameraCompClient",
+    "client.ui.NativeScreenManager",
+    "server.component.tameCompServer",
+    "mod.client.component.chunkSourceCompClient",
+    "client.ui.controls",
+    "server.component.timeCompServer",
+    "mod.client.component.collisionBoxCompClient",
+    "client.ui.controls.baseUIControl",
+    "server.component.weatherCompServer",
+    "mod.client.component.configCompClient",
+    "client.ui.controls.buttonUIControl",
+    "common",
+    "mod.client.component.deviceCompClient",
+    "client.ui.controls.gridUIControl",
+    "common.mod",
+    "mod.client.component.effectCompClient",
+    "client.ui.controls.imageUIControl",
+    "common.minecraftEnum",
+    "mod.client.component.engineCompFactoryClient",
+    "client.ui.controls.inputPanelUIControl",
+    "common.EntityType",
+    "mod.client.component.engineEffectBindControlComp",
+    "client.ui.controls.itemRendererUIControl",
+    "common.EnchantType",
+    "mod.client.component.engineTypeCompClient",
+    "client.ui.controls.labelUIControl",
+    "common.ItemType",
+    "mod.client.component.fogCompClient",
+    "client.ui.controls.minimapUIControl",
+    "common.BiomeType",
+    "mod.client.component.frameAniControlComp",
+    "client.ui.controls.neteaseComboBoxUIControl",
+    "common.SysSoundType",
+    "mod.client.component.frameAniEntityBindComp",
+    "client.ui.controls.neteasePaperDollUIControl",
+    "common.BlockType",
+    "mod.client.component.frameAniSkeletonBindComp",
+    "client.ui.controls.progressBarUIControl",
+    "common.EffectType",
+    "mod.client.component.frameAniTransComp",
+    "client.ui.controls.scrollViewUIControl",
+    "common.KeyBoardType",
+    "mod.client.component.gameCompClient",
+    "client.ui.controls.selectionWheelUIControl",
+    "common.utils",
+    "mod.client.component.healthCompClient",
+    "client.ui.controls.sliderUIControl",
+    "common.utils.mcmath",
+    "mod.client.component.itemCompClient",
+    "client.ui.controls.stackPanelUIControl",
+    "common.utils.colorUtil",
+    "mod.client.component.modAttrCompClient",
+    "client.ui.controls.switchToggleUIControl",
+    "common.utils.timer",
+    "mod.client.component.modelCompClient",
+    "client.ui.controls.textEditBoxUIControl",
+    "common.entity",
+    "mod.client.component.nameCompClient",
+    "client.system",
+    "common.entity.entityconst",
+    "mod.client.component.neteaseShopCompClient",
+    "client.system.clientSystem",
+    "common.component",
+    "mod.client.component.operationCompClient",
+    "client.component",
+    "common.component.baseComponent",
+    "mod.client.component.particleControlComp",
+    "client.component.achievementCompClient",
+    "common.component.blockPaletteComp",
+    "mod.client.component.particleEntityBindComp",
+    "client.component.actionCompClient",
+    "common.system",
+    "mod.client.component.particleSkeletonBindComp",
+    "client.component.actorMotionCompClient",
+    "common.system.baseSystem",
+    "mod.client.component.particleSystemCompClient",
+    "client.component.actorRenderCompClient",
+    "Preset",
+    "mod.client.component.particleTransComp",
+    "client.component.attrCompClient",
+    "Preset.Parts",
+    "mod.client.component.playerAnimCompClient",
+    "client.component.audioCustomCompClient",
+    "Preset.Parts.WorldPart",
+    "mod.client.component.playerCompClient",
+    "client.component.auxValueCompClient",
+    "Preset.Parts.TriggerPart",
+    "mod.client.component.playerViewCompClient",
+    "client.component.biomeCompClient",
+    "Preset.Parts.PostprocessPart",
+    "mod.client.component.posCompClient",
+    "client.component.blockCompClient",
+    "Preset.Parts.PortalPart",
+    "mod.client.component.postProcessControlComp",
+    "client.component.blockGeometryCompClient",
+    "Preset.Parts.PlayerBasicPart",
+    "mod.client.component.queryVariableCompClient",
+    "client.component.blockInfoCompClient",
+    "Preset.Parts.EntityBasePart",
+    "mod.client.component.recipeCompClient",
+    "client.component.blockUseEventWhiteListCompClient",
+    "Preset.Parts.CameraTrackPart",
+    "mod.client.component.rideCompClient",
+    "client.component.brightnessCompClient",
+    "Preset.Parts.NavPointsPart",
+    "mod.client.component.rotCompClient",
+    "client.component.cameraCompClient",
+    "Preset.Model",
+    "mod.client.component.skyRenderCompClient",
+    "client.component.chunkSourceCompClient",
+    "Preset.Model.BoxData",
+    "mod.client.component.tameCompClient",
+    "client.component.collisionBoxCompClient",
+    "Preset.Model.PresetBase",
+    "mod.client.component.textBoardCompClient",
+    "client.component.configCompClient",
+    "Preset.Model.TransformObject",
+    "mod.client.component.textNotifyCompClient",
+    "client.component.deviceCompClient",
+    "Preset.Model.Transform",
+    "mod.client.component.timeCompClient",
+    "client.component.effectCompClient",
+    "Preset.Model.SdkInterface",
+    "mod.client.component.virtualWorldCompClient",
+    "client.component.engineCompFactoryClient",
+    "Preset.Model.PartBase",
+    "mod.server",
+    "client.component.engineEffectBindControlComp",
+    "Preset.Model.GameObject",
+    "mod.server.extraServerApi",
+    "client.component.engineTypeCompClient",
+    "Preset.Model.Entity",
+    "mod.server.serverEvent",
+    "client.component.fogCompClient",
+    "Preset.Model.Entity.EntityPreset",
+    "mod.server.blockEntityData",
+    "client.component.frameAniControlComp",
+    "Preset.Model.Entity.EntityObject",
+    "mod.server.gamePlay",
+    "client.component.frameAniEntityBindComp",
+    "Preset.Model.Player",
+    "mod.server.gamePlay.AI",
+    "client.component.frameAniSkeletonBindComp",
+    "Preset.Model.Player.PlayerObject",
+    "mod.server.gamePlay.AI.customGoal",
+    "client.component.frameAniTransComp",
+    "Preset.Model.Player.PlayerPreset",
+    "mod.server.system",
+    "client.component.gameCompClient",
+    "Preset.Model.Block",
+    "mod.server.system.serverSystem",
+    "client.component.healthCompClient",
+    "Preset.Model.Block.BlockPreset",
+    "mod.server.component",
+    "client.component.itemCompClient",
+    "Preset.Model.Blueprint",
+    "mod.server.component.achievementCompServer",
+    "client.component.modAttrCompClient",
+    "Preset.Model.Blueprint.BaseUIBlueprintScreen",
+    "mod.server.component.actionCompServer",
+    "client.component.modelCompClient",
+    "Preset.Model.Blueprint.BaseUIBlueprintPart",
+    "mod.server.component.actorCollidableCompServer",
+    "client.component.nameCompClient",
+    "Preset.Model.Effect",
+    "mod.server.component.actorLootCompServer",
+    "client.component.neteaseShopCompClient",
+    "Preset.Model.Effect.EffectObject",
+    "mod.server.component.actorMotionCompServer",
+    "client.component.operationCompClient",
+    "Preset.Model.Effect.EffectPreset",
+    "mod.server.component.actorOwnerCompServer",
+    "client.component.particleControlComp",
+    "Preset.Model.Textboard",
+    "ast",
+    "client.component.particleEntityBindComp",
+    "Preset.Model.Textboard.TextboardObject",
+    "client.component.particleSkeletonBindComp",
+    "Preset.Model.Textboard.TextboardPreset",
+    "Preset.Model.UI",
+    "Preset.Model.UI.UIPreset",
+    "Preset.Controller",
+    "Preset.Controller.PresetApi"
+  ]
+}

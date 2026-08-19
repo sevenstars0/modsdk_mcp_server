@@ -74,6 +74,8 @@ class ModSdk38SyncTest(unittest.TestCase):
         self.assertEqual(detail["name"], "流体点击检测")
         results = search_component("流体", "netease")
         self.assertTrue(any(item["id"] == "netease:liquid_clipped" for item in results))
+        item_only = search_component("流体", "netease_item")
+        self.assertTrue(any(item["id"] == "netease:liquid_clipped" for item in item_only))
 
 
 if __name__ == "__main__":

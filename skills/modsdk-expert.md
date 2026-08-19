@@ -13,7 +13,7 @@
 
 ## ⚠️ 最高优先级：文档优先原则
 
-**在编写任何代码之前，必须先查阅文档！这是强制性要求。**
+先取得与目标匹配的规范，再查证实际使用的 API 或事件；不得凭记忆补全签名。
 
 ### 为什么需要这个规则？
 
@@ -32,11 +32,11 @@
 
 ### 强制执行的步骤
 
-1. **使用事件前** → 调用 `search_event("事件名")` 查询参数定义
-2. **使用 API 前** → 调用 `search_api("API名")` 查询接口签名
-3. **使用组件前** → 调用 `search_component("组件名")` 查询组件格式
-4. **生成 JSON 前** → 确认网易版的 `format_version`（物品 1.10，方块 1.10.0）
-5. **生成 manifest 前** → ModSDK 3.8 使用 `format_version: 2`
+1. **开始开发前** → 调用 `get_development_guidance` 获取目标版本、端侧和产物规则
+2. **使用事件/API 前** → 调用 `search_api`，再以 `get_api_detail` 核对完整签名和备注
+3. **使用组件前** → 调用 `search_components` 与 `get_component_details` 查询组件格式
+4. **生成 JSON 前** → 按内容类型与组件结构选择 format profile；物品默认 1.10，方块不是全局唯一版本
+5. **生成后** → 阅读生成器附带的校验报告；critical 阻断，warning 需说明人工验证项
 
 ---
 
@@ -58,8 +58,8 @@ import mod.server.extraServerApi as serverApi
 # 客户端 API  
 import mod.client.extraClientApi as clientApi
 
-# 获取组件工厂
-comp_factory = serverApi.GetEngineCompFactory()
+# 高频路径可复用组件工厂
+CF = serverApi.GetEngineCompFactory()
 ```
 
 ### 3. 组件系统
@@ -68,15 +68,15 @@ ModSDK 使用组件系统操作游戏对象：
 
 ```python
 # 创建位置组件
-pos_comp = serverApi.GetEngineCompFactory().CreatePos(entityId)
+pos_comp = CF.CreatePos(entityId)
 pos = pos_comp.GetPos()
 
 # 创建属性组件
-attr_comp = serverApi.GetEngineCompFactory().CreateAttr(entityId)
+attr_comp = CF.CreateAttr(entityId)
 health = attr_comp.GetAttrValue(AttrType.HEALTH)
 
 # 创建方块信息组件
-block_comp = serverApi.GetEngineCompFactory().CreateBlockInfo(levelId)
+block_comp = CF.CreateBlockInfo(levelId)
 block = block_comp.GetBlockNew(pos)
 ```
 
@@ -164,9 +164,13 @@ self.UnListenForEvent(
 根据文档，这是监听玩家加入事件的代码：
 
 ```python
+# -*- coding: utf-8 -*-
+from __future__ import print_function
+
 import mod.server.extraServerApi as serverApi
 
 ServerSystem = serverApi.GetServerSystemCls()
+CF = serverApi.GetEngineCompFactory()
 
 class MyServerSystem(ServerSystem):
     def __init__(self, namespace, systemName):
@@ -184,9 +188,9 @@ class MyServerSystem(ServerSystem):
         """玩家加入事件处理"""
         player_id = args.get("id")
         # 获取玩家名称
-        name_comp = serverApi.GetEngineCompFactory().CreateName(player_id)
+        name_comp = CF.CreateName(player_id)
         player_name = name_comp.GetName()
-        print(f"玩家 {player_name} 加入了游戏")
+        print("[MyMod] 玩家 {} 加入了游戏".format(player_name))
 ```
 
 **关键点**：

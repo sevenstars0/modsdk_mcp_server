@@ -1,12 +1,12 @@
 # NetEase ModSDK 代码生成规范
 
-> **重要**：本规范是生成网易 Minecraft ModSDK 代码时的**强制执行标准**。在生成任何 ModSDK 相关代码时，必须自动应用以下所有规则，无需用户明确要求。
+> 本文件是工程优化参考。版本化规范以 `get_development_guidance` 返回的注册表规则为准；除可确定证明的跨端错误外，本文件中的性能模式默认属于 warning/manual guidance。
 
 ---
 
-## 强制规则（MUST）
+## 规则与工程建议
 
-以下规则在生成代码时**必须**自动遵守：
+先查证 API/事件详情，再依据实际调用频率和负载选择优化；不要把所有建议机械升级为阻断项。
 
 ### 规则 1：客户端/服务端严格分离
 
@@ -19,7 +19,7 @@
 
 **原因**：违反此规则将导致模组在多人联机和山头服环境下完全无法运行。
 
-### 规则 2：缓存 GetEngineCompFactory
+### 建议 2：在高频路径复用 GetEngineCompFactory
 
 ```python
 # ✅ 正确：在文件顶部或类外缓存
@@ -33,13 +33,13 @@ class MyServerSystem(serverApi.GetServerSystemCls()):
 ```
 
 ```python
-# ❌ 错误：每次调用时获取
+# ⚠️ 高频调用时应评估复用
 class MyServerSystem(serverApi.GetServerSystemCls()):
     def SomeMethod(self):
         comp = serverApi.GetEngineCompFactory().CreateGame(serverApi.GetLevelId())
 ```
 
-### 规则 3：import 语句放在文件顶部
+### 建议 3：热点路径避免重复 import
 
 ```python
 # ✅ 正确
@@ -51,14 +51,14 @@ class MySystem(serverApi.GetServerSystemCls()):
 ```
 
 ```python
-# ❌ 错误：在函数内 import
+# ⚠️ 如果 Update 高频执行，应移到文件顶部
 class MySystem(serverApi.GetServerSystemCls()):
     def Update(self):
         import mod.server.extraServerApi as serverApi  # 每帧执行，严重性能问题
         serverApi.xxx()
 ```
 
-### 规则 4：常量在 __init__ 中初始化
+### 建议 4：稳定配置不要在高频回调中反复创建
 
 ```python
 # ✅ 正确
@@ -86,10 +86,10 @@ self.NotifyToClient(playerId, "EventName", data)
 self.BroadcastToAllClient("EventName", data)
 ```
 
-### 规则 6：Tick 逻辑必须降帧
+### 建议 6：Tick 中的耗时逻辑按业务精度降频
 
 ```python
-# ✅ 正确：不同逻辑使用不同频率（使用质数避免同时触发）
+# 示例：按实际精度使用不同频率；间隔值不要求固定为质数
 class MySystem(serverApi.GetServerSystemCls()):
     def __init__(self, namespace, systemName):
         super(MySystem, self).__init__(namespace, systemName)
@@ -110,7 +110,7 @@ class MySystem(serverApi.GetServerSystemCls()):
             self.handleLowPriority()
 ```
 
-### 规则 7：大批量操作必须分帧
+### 建议 7：超出单帧预算的大批量操作分帧
 
 ```python
 # ✅ 正确：分帧处理

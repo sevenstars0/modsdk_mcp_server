@@ -9,6 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # 复制应用代码和文档
 COPY modsdk_mcp/ ./modsdk_mcp/
 COPY docs/ ./docs/
+COPY input/ ./input/
 COPY skills/ ./skills/
 COPY standard/ ./standard/
 

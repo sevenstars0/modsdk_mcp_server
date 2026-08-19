@@ -2,7 +2,7 @@
 
 ## 概述
 
-这是一个专门用于网易我的世界 ModSDK 3.8 基岩版 JSON 内容生成的 MCP 技能。它提供了完整的数据驱动内容生成能力，支持物品、方块、实体、配方、战利品表等 JSON 文件的生成。
+这是一个面向网易《我的世界》ModSDK 3.9 / BE 1.21.120 的 JSON 内容生成说明。开始前先调用 `get_development_guidance`，生成后以工具返回的校验报告为准。
 
 ## 核心能力
 
@@ -30,7 +30,7 @@
 
 ### 3. 实体 JSON 生成
 - `generate_entity_json` - 生成自定义实体 JSON
-- **重要**：网易 ModSDK 3.8 实体仍需设置 `runtime_identifier`
+- `runtime_identifier` 是否必需应按实体目标和当前官方详情核对，不能从旧示例推广为所有实体的硬规则
 - 支持行为组件、寻路组件、战斗组件等
 
 ### 4. 其他 JSON 生成
@@ -49,7 +49,7 @@
 - `get_best_practices` - 获取代码规范和最佳实践
 
 ### 事件系统
-- `list_modsdk_events` - 列出 ModSDK 常用事件
+- `search_api` / `get_api_detail` - 查询并核对事件或 API
 
 ## 组件知识库
 
@@ -109,8 +109,8 @@ netease:redstone            红石信号
 
 | 内容类型 | format_version | 说明 |
 |----------|----------------|------|
-| 物品 | 1.16.100 | 标准基岩版 |
-| 方块 | 1.16.100 | 标准基岩版 |
+| 基础物品 | 1.10 | 网易官方基础物品格式 |
+| 方块 | 1.10.0 / 1.16.0 / 1.19.20 | 分别对应对象组件、标量组件、现代组件；按 profile 选择 |
 | 实体 | 1.10.0 | 网易 ModSDK 兼容 |
 | 配方 | 1.12.0 | 标准基岩版 |
 | 战利品表 | 1.12.0 | 标准基岩版 |
@@ -177,14 +177,14 @@ resource_pack/
 ## 注意事项
 
 1. **Python 2.7 兼容性**：ModSDK 使用 Python 2.7，代码不能使用 f-string、type hints 等
-2. **runtime_identifier**：网易 ModSDK 3.8 实体必须设置此属性
-3. **组件工厂缓存**：`GetEngineCompFactory()` 必须在文件顶部缓存
-4. **Tick 降帧**：所有 Tick 逻辑必须使用质数间隔降帧
-5. **manifest 格式**：ModSDK 3.8 的 `manifest.json` 使用 `format_version: 2`
+2. **runtime_identifier**：只在相应实体格式和目标要求时设置，并通过文档查证
+3. **版本—结构一致**：不要把现代组件写入旧版方块格式，也不要把旧对象形状写入标量档
+4. **命名空间**：3.9 自定义维度的 `biome_type` 必须使用完整 `namespace:id`
+5. **证据边界**：3.9 已同步官方文档，但尚无可读的 Python 运行时源码复核
 
 ## 版本信息
 
 - MCP Server 版本: 1.0.0
-- 支持的 ModSDK 版本: 3.8
-- 支持的基岩版格式版本: 1.8.0 - 1.16.100
-- 工具总数: 34 个
+- 当前 ModSDK 版本: 3.9
+- 对应基岩版版本: 1.21.120
+- MCP 工具总数: 38 个

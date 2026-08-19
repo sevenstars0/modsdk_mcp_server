@@ -13,10 +13,16 @@ class SseAppTest(unittest.TestCase):
             response = client.get("/health")
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json(),
-            {"status": "ok", "server": "netease-modsdk-mcp"},
-        )
+        payload = response.json()
+        self.assertEqual(payload["status"], "ok")
+        self.assertEqual(payload["server"], "netease-modsdk-mcp")
+        self.assertEqual(payload["modsdk_version"], "3.9")
+        self.assertEqual(payload["bedrock_version"], "1.21.120")
+        self.assertEqual(payload["rule_count"], 45)
+        self.assertGreater(payload["detector_count"], 0)
+        self.assertGreater(payload["document_count"], 0)
+        self.assertTrue(payload["snapshot_time"])
+        self.assertEqual(payload["runtime_evidence_status"], "unreviewed")
 
     def test_message_endpoint_returns_http_error_without_type_error(self):
         with TestClient(create_sse_app(), raise_server_exceptions=True) as client:

@@ -9,6 +9,8 @@
 - 资源包配置 (item_texture.json / blocks.json / texts/)
 - 行为包与资源包的 manifest.json
 
+目标版本为 ModSDK 3.9 / BE 1.21.120。先调用 `get_development_guidance` 获取内容类型和格式档规则；本文件示例不能覆盖同版本官方详情。
+
 ## 核心知识
 
 ### 1. NetEase 特有文件夹结构
@@ -177,7 +179,7 @@ item.{namespace}:{item_id}.name=物品显示名称
 
 | 版本 | 破坏时间写法 | 爆炸抗性写法 |
 |-----|-------------|------------|
-| 1.10.0 | `"minecraft:destroy_time": {"value": 4.0}` | `"minecraft:explosion_resistance": 20` |
+| 1.10.0 | `"minecraft:destroy_time": {"value": 4.0}` | `"minecraft:explosion_resistance": {"value": 20}` |
 | 1.16.0 | `"minecraft:destroy_time": 4.0` | `"minecraft:explosion_resistance": 20` |
 | 1.19.20+ | `"minecraft:destructible_by_mining": {"seconds_to_destroy": 4.0}` | `"minecraft:destructible_by_explosion": {"explosion_resistance": 20}` |
 
@@ -189,8 +191,7 @@ item.{namespace}:{item_id}.name=物品显示名称
     "minecraft:block": {
         "description": {
             "identifier": "{namespace}:{block_id}",
-            "register_to_create_menu": true,
-            "category": "Nature"
+            "menu_category": {"category": "nature"}
         },
         "components": {
             "minecraft:destructible_by_mining": {
@@ -696,6 +697,6 @@ tile.mymod:glowing_ore.name=发光矿石
 
 1. **文件命名**: `{namespace}_{id}.json`
 2. **identifier**: 全小写，`namespace:name` 格式
-3. **format_version**: 物品用 `1.10`，方块用 `1.19.20`，配方用 `1.12` 或 `1.20.10`
+3. **format_version**: 基础物品默认 `1.10`；方块按 `legacy_1_10`、`scalar_1_16`、`modern_1_19_20` profile 选择，只有版本与组件形状匹配才可组合
 4. **NetEase 专用文件夹**: `netease_items_beh`, `netease_items_res`, `netease_blocks`, `netease_recipes`
 5. **本地化**: 物品用 `item.{id}.name=`，方块用 `tile.{id}.name=`
